@@ -5,3 +5,4 @@ Daily progress log, newest entries at the bottom. Each entry is added by `script
 ## 2026-11-10
 
 - Set up portfolio repository: roadmap, role folders, project template and daily push script
+- DE-1: done - Airflow + dbt ELT, 1.55M rows, 70 tests, SCD2 customers, CI

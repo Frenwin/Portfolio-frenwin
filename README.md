@@ -13,7 +13,7 @@
 
 | # | Week | Project | Key skills | Status |
 | --- | --- | --- | --- | --- |
-| DE-1 | 1 | [Batch ELT to cloud warehouse](01-data-engineer/) | Airflow, dbt, BigQuery | Planned |
+| DE-1 | 1 | [Batch ELT to a star-schema warehouse](01-data-engineer/de-01-elt-airflow-dbt/) | Airflow, dbt, PostgreSQL, SCD2, CI | Done |
 | DE-2 | 1 | [Lakehouse medallion](01-data-engineer/) | PySpark, Delta Lake | Planned |
 | DE-3 | 1 | [Real-time streaming pipeline](01-data-engineer/) | Kafka, Spark Streaming, Grafana | Planned |
 | DE-4 | 1 | [Change Data Capture](01-data-engineer/) | Debezium, Kafka Connect | Planned |

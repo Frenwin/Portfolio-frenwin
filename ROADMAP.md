@@ -30,7 +30,7 @@ gantt
     dateFormat YYYY-MM-DD
     axisFormat %d %b
     section Data Engineer
-    DE-1 ELT ke BigQuery + dbt      :de1, 2026-11-16, 2d
+    DE-1 ELT Airflow + dbt         :de1, 2026-11-16, 2d
     DE-2 Lakehouse Spark + Delta    :de2, 2026-11-18, 1d
     DE-3 Streaming Kafka + Spark    :de3, 2026-11-19, 2d
     DE-4 CDC Debezium               :de4, 2026-11-21, 1d
@@ -55,7 +55,7 @@ Hari Minggu (22 Nov, 29 Nov, 6 Des, 13 Des) dipakai sebagai **buffer**: menyeles
 
 | # | Tanggal | Durasi | Project | Skill industri utama | Folder |
 | --- | --- | --- | --- | --- | --- |
-| DE-1 | Sen–Sel, 16–17 Nov | 2 hari | Batch ELT ke cloud warehouse | Airflow, dbt, BigQuery, dimensional modeling | `de-01-elt-bigquery-dbt` |
+| DE-1 | Sen–Sel, 16–17 Nov | 2 hari | Batch ELT ke data warehouse | Airflow, dbt, PostgreSQL, dimensional modeling | `de-01-elt-airflow-dbt` |
 | DE-2 | Rab, 18 Nov | 1 hari | Lakehouse medallion | PySpark, Delta Lake, Parquet, partitioning | `de-02-lakehouse-spark-delta` |
 | DE-3 | Kam–Jum, 19–20 Nov | 2 hari | Real-time streaming pipeline | Kafka, Spark Structured Streaming, Grafana | `de-03-realtime-kafka-spark` |
 | DE-4 | Sab, 21 Nov | 1 hari | Change Data Capture | Debezium, Kafka Connect, PostgreSQL WAL | `de-04-cdc-debezium` |
@@ -72,7 +72,7 @@ Hari Minggu (22 Nov, 29 Nov, 6 Des, 13 Des) dipakai sebagai **buffer**: menyeles
 | AI-3 | Kam–Jum, 10–11 Des | 2 hari | Fine-tuning NLP Bahasa Indonesia | LoRA/PEFT, IndoBERT, evaluation | `ai-03-indonesian-nlp-lora` |
 | AI-4 | Sab, 12 Des | 1 hari | Object detection di edge | YOLO, ONNX, benchmark latency | `ai-04-yolo-edge-deployment` |
 
-**Struktur folder:** setiap project menjadi subfolder di folder role-nya, misalnya `01-data-engineer/de-01-elt-bigquery-dbt/`. Buat dengan `scripts/new-project.ps1` (lihat [Alur GitHub harian](#9-alur-github-harian)).
+**Struktur folder:** setiap project menjadi subfolder di folder role-nya, misalnya `01-data-engineer/de-01-elt-airflow-dbt/`. Buat dengan `scripts/new-project.ps1` (lihat [Alur GitHub harian](#9-alur-github-harian)).
 
 ---
 
@@ -85,7 +85,7 @@ Daftar ini disusun dari requirement yang paling sering muncul di lowongan Data/A
 | Data Engineer | SQL + Python | semua DE |
 | | Orchestration (Airflow) | DE-1 |
 | | Transformasi & modeling (dbt, star schema, SCD) | DE-1 |
-| | Cloud data warehouse (BigQuery / Snowflake) | DE-1 |
+| | Data warehouse (PostgreSQL; BigQuery / Snowflake sebagai next step) | DE-1 |
 | | Big data processing (Spark) & lakehouse (Delta / Iceberg) | DE-2, DE-3 |
 | | Streaming (Kafka) & CDC | DE-3, DE-4 |
 | | Data quality, Docker, CI/CD | semua DE |
@@ -110,12 +110,12 @@ Daftar ini disusun dari requirement yang paling sering muncul di lowongan Data/A
 
 ## 3. Minggu 1 — Data Engineer (16–22 Nov)
 
-### DE-1 · Batch ELT ke Cloud Warehouse — Sen–Sel, 16–17 Nov (2 hari)
+### DE-1 · Batch ELT ke Data Warehouse — Sen–Sel, 16–17 Nov (2 hari) · **Selesai 10 Nov** → [lihat project](01-data-engineer/de-01-elt-airflow-dbt/)
 
-- **Kenapa industri butuh:** pola Airflow + dbt + cloud warehouse adalah stack data engineering paling umum di perusahaan modern.
+- **Kenapa industri butuh:** pola Airflow + dbt + warehouse adalah stack data engineering paling umum di perusahaan modern.
 - **Dataset:** [Olist Brazilian E-Commerce](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce).
-- **Stack:** Docker Compose, Airflow, BigQuery (sandbox gratis) atau PostgreSQL, dbt, GitHub Actions.
-- **Scope MVP:** DAG ingestion yang idempotent → schema `raw` → dbt `staging` → `marts` (`fct_orders`, `dim_customer` SCD2 via snapshot, `dim_product`, `dim_date`) → dbt tests.
+- **Stack:** Docker Compose, Airflow, PostgreSQL, dbt, GitHub Actions (BigQuery sebagai target tambahan di next steps).
+- **Scope MVP:** DAG ingestion yang idempotent → schema `raw` → dbt `staging` → `marts` (`fct_orders`, `dim_customers` SCD2 dari riwayat order, `dim_products`, `dim_date`) → dbt tests.
 - **Output:** README dengan diagram arsitektur + ERD, dbt docs, CI yang menjalankan `dbt build`, data dictionary.
 - **Stretch:** Terraform untuk dataset BigQuery, alert Slack saat DAG gagal.
 
@@ -334,7 +334,7 @@ Semua project ada di satu repo publik. **Push minimal sekali sehari**, termasuk 
 
 | Kapan | Perintah (dari root repo) | Hasil |
 | --- | --- | --- |
-| Mulai project | `powershell -ExecutionPolicy Bypass -File scripts\new-project.ps1 -Role 01-data-engineer -Name de-01-elt-bigquery-dbt -Title "Batch ELT to BigQuery with dbt"` | folder project + README dari template |
+| Mulai project | `powershell -ExecutionPolicy Bypass -File scripts\new-project.ps1 -Role 01-data-engineer -Name de-01-elt-airflow-dbt -Title "Batch ELT with Airflow and dbt"` | folder project + README dari template |
 | Setiap satu bagian selesai (min. 1× sehari) | `powershell -ExecutionPolicy Bypass -File scripts\daily-push.ps1 -Message "DE-1: dbt staging models + tests"` | entri baru di `DEVLOG.md`, commit, push |
 | Project selesai | ubah Status menjadi `Done` di `README.md` dan README role, lalu daily-push dengan pesan `DE-1: done — <hasil utama>` | progres terlihat di halaman depan repo |
 
@@ -349,7 +349,7 @@ Semua project ada di satu repo publik. **Push minimal sekali sehari**, termasuk 
 ## 10. Progress tracker
 
 **Minggu 1 — Data Engineer**
-- [ ] DE-1 `de-01-elt-bigquery-dbt`
+- [x] DE-1 `de-01-elt-airflow-dbt`
 - [ ] DE-2 `de-02-lakehouse-spark-delta`
 - [ ] DE-3 `de-03-realtime-kafka-spark`
 - [ ] DE-4 `de-04-cdc-debezium`

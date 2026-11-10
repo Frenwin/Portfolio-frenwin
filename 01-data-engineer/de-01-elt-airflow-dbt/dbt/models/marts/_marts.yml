@@ -1,0 +1,100 @@
+version: 2
+
+models:
+  - name: dim_customers
+    description: SCD Type 2 customer dimension, one row per address version of a customer_unique_id.
+    columns:
+      - name: customer_sk
+        description: Surrogate key, md5(customer_unique_id || '-' || version_number).
+        data_tests: [unique, not_null]
+      - name: customer_unique_id
+        data_tests: [not_null]
+      - name: valid_from
+        data_tests: [not_null]
+      - name: is_current
+        data_tests: [not_null]
+
+  - name: dim_products
+    description: Product dimension with English category names.
+    columns:
+      - name: product_id
+        data_tests: [unique, not_null]
+      - name: category_name
+        data_tests: [not_null]
+
+  - name: dim_sellers
+    description: Seller dimension with location.
+    columns:
+      - name: seller_id
+        data_tests: [unique, not_null]
+
+  - name: dim_date
+    description: Calendar dimension, one row per day.
+    columns:
+      - name: date_key
+        description: YYYYMMDD integer.
+        data_tests: [unique, not_null]
+
+  - name: fct_orders
+    description: One row per order with lifecycle timestamps, values, payments, reviews and delivery performance.
+    columns:
+      - name: order_id
+        data_tests: [unique, not_null]
+      - name: customer_sk
+        description: Customer address version valid at purchase time.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_customers')
+                field: customer_sk
+      - name: purchase_date_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_key
+      - name: order_status
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [created, approved, invoiced, processing, shipped, delivered, canceled, unavailable]
+      - name: is_delivered_late
+        description: Null when the order has not been delivered.
+
+  - name: fct_order_items
+    description: One row per order item. Incremental with a lookback window (var lookback_days).
+    columns:
+      - name: order_item_key
+        data_tests: [unique, not_null]
+      - name: order_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('fct_orders')
+                field: order_id
+      - name: product_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_products')
+                field: product_id
+      - name: seller_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_sellers')
+                field: seller_id
+      - name: customer_sk
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_customers')
+                field: customer_sk
+      - name: purchase_date_key
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_key

@@ -31,12 +31,11 @@ if (-not $NoLog) {
 git add -A
 git diff --cached --quiet
 if ($LASTEXITCODE -eq 0) {
-    Write-Host 'Nothing to commit.'
-    exit 0
+    Write-Host 'Nothing new to commit; pushing any local commits.'
+} else {
+    git commit -m $Message
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 }
-
-git commit -m $Message
-if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 git push
 exit $LASTEXITCODE

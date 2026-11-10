@@ -31,6 +31,7 @@ runs/
 # dbt / Airflow / Spark
 **/target/
 **/dbt_packages/
+**/.user.yml
 **/logs/
 spark-warehouse/
 metastore_db/

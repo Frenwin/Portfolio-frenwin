@@ -1,0 +1,29 @@
+version: 2
+
+sources:
+  - name: olist
+    description: Olist Brazilian e-commerce marketplace, Sep 2016 – Oct 2018, loaded as text by ingestion/load_raw.py.
+    schema: raw
+    loaded_at_field: _loaded_at
+    freshness:
+      warn_after: { count: 24, period: hour }
+      error_after: { count: 48, period: hour }
+    tables:
+      - name: customers
+        description: One row per order-level customer id; the person is customer_unique_id.
+      - name: geolocation
+        description: Many lat/lng points per zip code prefix, including duplicates and points outside Brazil.
+      - name: order_items
+        description: One row per item in an order.
+      - name: order_payments
+        description: One row per payment method used on an order.
+      - name: order_reviews
+        description: Customer reviews; review_id is not unique on its own (same review linked to several orders).
+      - name: orders
+        description: One row per order with lifecycle timestamps.
+      - name: products
+        description: Product catalogue; column names keep the source typo "lenght".
+      - name: sellers
+        description: One row per seller.
+      - name: product_category_name_translation
+        description: Portuguese to English category names; two categories in products are missing here.

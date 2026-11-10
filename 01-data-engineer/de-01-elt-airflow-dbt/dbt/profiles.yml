@@ -1,0 +1,14 @@
+# Connection comes from environment variables, so the same profile works in
+# Docker (host=postgres, port=5432), on a laptop (localhost:5434) and in CI.
+olist_warehouse:
+  target: warehouse
+  outputs:
+    warehouse:
+      type: postgres
+      host: "{{ env_var('WAREHOUSE_HOST', 'localhost') }}"
+      port: "{{ env_var('WAREHOUSE_PORT', '5434') | as_number }}"
+      user: "{{ env_var('WAREHOUSE_USER', 'warehouse') }}"
+      password: "{{ env_var('WAREHOUSE_PASSWORD', 'warehouse') }}"
+      dbname: "{{ env_var('WAREHOUSE_DB', 'warehouse') }}"
+      schema: analytics
+      threads: 4
