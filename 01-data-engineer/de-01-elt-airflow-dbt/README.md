@@ -1,10 +1,27 @@
-# Batch ELT: Olist to a Star-Schema Warehouse with Airflow and dbt
+# DE-1 · Batch ELT: Olist → Star-Schema Warehouse
 
 [![DE-1 CI](https://github.com/Frenwin/Portfolio/actions/workflows/de-01-elt-airflow-dbt.yml/badge.svg)](https://github.com/Frenwin/Portfolio/actions/workflows/de-01-elt-airflow-dbt.yml)
+![Airflow](https://img.shields.io/badge/Airflow-2.10-017CEE)
+![dbt](https://img.shields.io/badge/dbt-1.12-FF694B)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED)
+
+[← Week 1 · Data Engineer](../) · [Portfolio home](../../README.md)
 
 > Loads **1.55 million rows** from 9 raw CSV files into a tested star-schema warehouse in **~30 seconds**, with **70 data tests**, an SCD Type 2 customer dimension rebuilt from order history, and CI on every push.
 
-**Role:** Data Engineer · **Built:** 2026-11-10 · **Status:** Done · Part of [16 projects in 4 weeks](../../README.md)
+## At a glance
+
+| | |
+| --- | --- |
+| **Problem** | Order, payment, review and customer data sit in nine separate raw exports, with duplicates and inconsistent keys. Nobody can trust a number without cleaning the files again. |
+| **What I built** | A daily Airflow pipeline that loads the files idempotently, then dbt models that clean, join and test them into a star schema |
+| **Result** | 1.55M rows in ~30 s · 70 data tests passing · identical results on every re-run |
+| **Why it matters** | Every dashboard, experiment and AI feature in the next three weeks can read from one trusted model |
+| **Run it** | `docker compose up -d --build` → Airflow at `localhost:8080` |
+| **Built** | 2026-11-10 in one day · Role: Data Engineer |
+
+**Contents:** [Problem](#problem) · [Architecture](#architecture) · [Data model](#data-model) · [Results](#results) · [How to run](#how-to-run) · [Key decisions](#key-decisions) · [Limitations](#limitations--next-steps)
 
 ## Problem
 
@@ -142,7 +159,8 @@ docker compose exec postgres psql -U warehouse -d warehouse -c "select order_sta
 
 No Kaggle access? Load the bundled 450-order sample instead: copy `data/sample/*.csv` to `data/raw/`.
 
-Run the tests and dbt locally without Airflow:
+<details>
+<summary><b>Run the tests and dbt without Airflow</b></summary>
 
 ```powershell
 python -m venv .venv; .\.venv\Scripts\Activate.ps1
@@ -152,7 +170,10 @@ python -m ingestion.load_raw --data-dir data/sample
 cd dbt; dbt build --profiles-dir .
 ```
 
-## Project structure
+</details>
+
+<details>
+<summary><b>Project structure</b></summary>
 
 ```text
 de-01-elt-airflow-dbt/
@@ -172,6 +193,8 @@ de-01-elt-airflow-dbt/
 └── docs/                       # ADR + data dictionary
 ```
 
+</details>
+
 ## Key decisions
 
 - **ELT, not ETL.** Raw data lands as text and is typed in dbt, so a bad cast fails a visible model instead of silently breaking ingestion. ([ADR-001](docs/adr/001-stack-and-loading.md))
@@ -182,7 +205,7 @@ de-01-elt-airflow-dbt/
 
 ## Limitations & next steps
 
-- Raw files are full exports, so each run reloads everything; a real source would use incremental extraction or CDC ([DE-4](../README.md)).
+- Raw files are full exports, so each run reloads everything; a real source would use incremental extraction or CDC (planned in [DE-4](../)).
 - `fct_orders` is rebuilt fully each run; late status changes on old orders are handled, but at full-table cost.
 - Add a BigQuery target to `profiles.yml` and publish `dbt docs` to GitHub Pages.
 - Alert on DAG failure (Slack or email callback).
@@ -194,3 +217,7 @@ Python 3.11 · Apache Airflow 2.10.5 · dbt-core 1.12.6 + dbt-postgres 1.11.0 ·
 ## Data source
 
 [Brazilian E-Commerce Public Dataset by Olist](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce), published on Kaggle under CC BY-NC-SA 4.0. The sample in `data/sample/` is a subset of that dataset, redistributed under the same license.
+
+---
+
+[← Week 1 · Data Engineer](../) · [Portfolio home](../../README.md)

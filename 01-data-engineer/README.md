@@ -1,12 +1,45 @@
-# Week 1 — Data Engineer (16–22 Nov 2026)
+# Week 1 · Data Engineer — Make data reliable
 
-Pipelines that move, model, and validate data the way production teams do: batch ELT, lakehouse, streaming, and CDC.
+> **Purpose of this week:** prove I can build the foundation everything else depends on. Before anyone can analyse, predict or build AI, data has to arrive on time, in the right shape, and be correct.
 
-| # | Date | Project | Stack | Status |
-| --- | --- | --- | --- | --- |
-| DE-1 | 10 Nov | [`de-01-elt-airflow-dbt`](de-01-elt-airflow-dbt/) — Batch ELT into a tested star schema with an SCD2 customer dimension | Airflow, dbt, PostgreSQL, Docker, GitHub Actions | Done |
-| DE-2 | 18 Nov | `de-02-lakehouse-spark-delta` — Bronze/silver/gold lakehouse on NYC taxi data | PySpark, Delta Lake, MinIO | Planned |
-| DE-3 | 19–20 Nov | `de-03-realtime-kafka-spark` — Real-time event aggregation with alerting | Kafka, Spark Structured Streaming, PostgreSQL, Grafana | Planned |
-| DE-4 | 21 Nov | `de-04-cdc-debezium` — Replicate inserts, updates and deletes from an OLTP database | PostgreSQL, Debezium, Kafka Connect | Planned |
+[← Portfolio home](../README.md) · [Next: Week 2 · Data Analyst →](../02-data-analyst/)
 
-Details for each project: [ROADMAP.md — Minggu 1](../ROADMAP.md#3-minggu-1--data-engineer-1622-nov).
+## Why this week comes first
+
+Every later week reads from data. If a pipeline double-counts orders or silently drops rows, the dashboard in Week 2 is wrong, the experiment in Week 3 draws the wrong conclusion, and the AI in Week 4 answers from bad facts. Data engineering is the part nobody sees when it works and everybody feels when it breaks.
+
+## The question this week answers
+
+**"Is the data correct, complete and on time?"** Each project answers it for a different way that data moves:
+
+| Data arrives… | Project | Example in industry |
+| --- | --- | --- |
+| as daily files or exports | **DE-1** batch ELT | nightly sales exports loaded into a warehouse |
+| as very large files | **DE-2** lakehouse | years of trip or transaction history |
+| as a continuous stream of events | **DE-3** streaming | ride requests, payments, clicks |
+| as changes inside a live database | **DE-4** change data capture | copying an app's database without slowing it down |
+
+## Projects
+
+| # | Project | What it proves | Stack | Status |
+| --- | --- | --- | --- | :---: |
+| DE-1 | [**Batch ELT to a star-schema warehouse**](de-01-elt-airflow-dbt/) | An orchestrated, idempotent pipeline with 70 data tests, an SCD2 dimension and CI | Airflow, dbt, PostgreSQL, Docker, GitHub Actions | ✅ |
+| DE-2 | Lakehouse with bronze/silver/gold layers | Processing tens of millions of rows with partitioning, upserts and time travel | PySpark, Delta Lake, MinIO | ⬜ |
+| DE-3 | Real-time streaming pipeline | Windowed aggregation of live events, late-data handling, alerting | Kafka, Spark Structured Streaming, Grafana | ⬜ |
+| DE-4 | Change Data Capture | Inserts, updates and deletes replicated from an operational database | PostgreSQL, Debezium, Kafka Connect | ⬜ |
+
+## Skills covered
+
+| Skill | Where it is shown |
+| --- | --- |
+| Orchestration and scheduling | DE-1 |
+| Dimensional modeling (star schema, SCD Type 2) | DE-1 |
+| Data quality testing and freshness checks | DE-1, DE-3 |
+| Idempotent and incremental loading | DE-1, DE-2 |
+| Distributed processing and lakehouse formats | DE-2, DE-3 |
+| Streaming and change data capture | DE-3, DE-4 |
+| Docker, CI/CD, reproducible setup | all |
+
+## What this week hands to the next
+
+The Olist warehouse from DE-1 (`marts.fct_orders`, `dim_customers`, …) is clean, tested and documented, so Week 2 can start analysing instead of cleaning.
