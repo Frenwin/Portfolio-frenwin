@@ -1,0 +1,42 @@
+# Private files (never publish)
+CV/
+.env
+*.env
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+.pytest_cache/
+
+# Data (download with scripts; document the source in each README)
+**/data/raw/
+**/data/processed/
+*.parquet
+*.csv.gz
+
+# Model artifacts and experiment tracking
+*.pt
+*.pth
+*.onnx
+*.safetensors
+*.ckpt
+mlruns/
+wandb/
+runs/
+
+# dbt / Airflow / Spark
+**/target/
+**/dbt_packages/
+**/logs/
+spark-warehouse/
+metastore_db/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
