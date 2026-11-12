@@ -24,8 +24,8 @@ Every later week reads from data. If a pipeline double-counts orders or silently
 | # | Project | What it proves | Stack | Status |
 | --- | --- | --- | --- | :---: |
 | DE-1 | [**Batch ELT to a star-schema warehouse**](de-01-elt-airflow-dbt/) | An orchestrated, idempotent pipeline with 70 data tests, an SCD2 dimension and CI | Airflow, dbt, PostgreSQL, Docker, GitHub Actions | ✅ |
-| DE-2 | Lakehouse with bronze/silver/gold layers | Processing tens of millions of rows with partitioning, upserts and time travel | PySpark, Delta Lake, MinIO | ⬜ |
-| DE-3 | Real-time streaming pipeline | Windowed aggregation of live events, late-data handling, alerting | Kafka, Spark Structured Streaming, Grafana | ⬜ |
+| DE-2 | [**Lakehouse with bronze/silver/gold layers**](de-02-lakehouse-spark-delta/) | 9.5M taxi trips validated, de-duplicated and partitioned on S3 storage; idempotent month re-loads, time travel | PySpark, Delta Lake, SeaweedFS (S3) | ✅ |
+| DE-3 | [**Real-time ride event streaming**](de-03-realtime-kafka-spark/) | Exactly-once results from a faulty stream: duplicates, late events, malformed messages, fraud alerts in seconds | Kafka, Spark Structured Streaming, PostgreSQL, Grafana | ✅ |
 | DE-4 | Change Data Capture | Inserts, updates and deletes replicated from an operational database | PostgreSQL, Debezium, Kafka Connect | ⬜ |
 
 ## Skills covered

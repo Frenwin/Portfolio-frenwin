@@ -1,0 +1,179 @@
+{
+  "uid": "ride-stream",
+  "title": "Jakarta Ride Stream",
+  "description": "Real-time ride events: Kafka -> Spark Structured Streaming -> PostgreSQL",
+  "tags": ["kafka", "spark", "streaming"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "editable": false,
+  "refresh": "5s",
+  "time": { "from": "now-15m", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Events ingested per second (last minute)",
+      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 0 },
+      "datasource": { "type": "grafana-postgresql-datasource", "uid": "streaming-pg" },
+      "fieldConfig": { "defaults": { "unit": "short", "decimals": 0, "color": { "mode": "fixed", "fixedColor": "blue" } }, "overrides": [] },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "colorMode": "value", "graphMode": "none", "textMode": "value" },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "grafana-postgresql-datasource", "uid": "streaming-pg" },
+          "editorMode": "code",
+          "rawQuery": true,
+          "format": "table",
+          "rawSql": "SELECT count(*) / 60.0 AS \"events/s\" FROM rides WHERE ingested_at > now() - interval '1 minute'"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "End-to-end latency p95 (last 5 min)",
+      "gridPos": { "h": 5, "w": 6, "x": 6, "y": 0 },
+      "datasource": { "type": "grafana-postgresql-datasource", "uid": "streaming-pg" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "decimals": 1,
+          "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "orange", "value": 15 }, { "color": "red", "value": 30 } ] }
+        },
+        "overrides": []
+      },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "colorMode": "value", "graphMode": "none", "textMode": "value" },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "grafana-postgresql-datasource", "uid": "streaming-pg" },
+          "editorMode": "code",
+          "rawQuery": true,
+          "format": "table",
+          "rawSql": "SELECT percentile_cont(0.95) WITHIN GROUP (ORDER BY extract(epoch FROM ingested_at - produced_at)) AS \"p95\" FROM rides WHERE ingested_at > now() - interval '5 minutes'"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Fraud alerts (last 15 min)",
+      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 0 },
+      "datasource": { "type": "grafana-postgresql-datasource", "uid": "streaming-pg" },
+      "fieldConfig": {
+        "defaults": { "unit": "short", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "red", "value": 1 } ] } },
+        "overrides": []
+      },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "colorMode": "value", "graphMode": "none", "textMode": "value" },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "grafana-postgresql-datasource", "uid": "streaming-pg" },
+          "editorMode": "code",
+          "rawQuery": true,
+          "format": "table",
+          "rawSql": "SELECT count(*) AS alerts FROM fraud_alerts WHERE flagged_at > now() - interval '15 minutes'"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Rejected events (last 15 min)",
+      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 0 },
+      "datasource": { "type": "grafana-postgresql-datasource", "uid": "streaming-pg" },
+      "fieldConfig": {
+        "defaults": { "unit": "short", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "orange", "value": 1 } ] } },
+        "overrides": []
+      },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "colorMode": "value", "graphMode": "none", "textMode": "value" },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "grafana-postgresql-datasource", "uid": "streaming-pg" },
+          "editorMode": "code",
+          "rawQuery": true,
+          "format": "table",
+          "rawSql": "SELECT count(*) AS rejected FROM rejected_events WHERE rejected_at > now() - interval '15 minutes'"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "Trips per minute by zone",
+      "gridPos": { "h": 10, "w": 16, "x": 0, "y": 5 },
+      "datasource": { "type": "grafana-postgresql-datasource", "uid": "streaming-pg" },
+      "fieldConfig": { "defaults": { "unit": "short", "custom": { "lineWidth": 1, "fillOpacity": 0, "showPoints": "never" } }, "overrides": [] },
+      "options": { "legend": { "displayMode": "table", "placement": "right", "calcs": ["lastNotNull"], "sortBy": "Last *", "sortDesc": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "grafana-postgresql-datasource", "uid": "streaming-pg" },
+          "editorMode": "code",
+          "rawQuery": true,
+          "format": "time_series",
+          "rawSql": "SELECT window_start AS time, zone AS metric, trips AS value FROM zone_demand_1m WHERE $__timeFilter(window_start) ORDER BY 1"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "barchart",
+      "title": "Revenue by zone, last 15 min (IDR)",
+      "gridPos": { "h": 10, "w": 8, "x": 16, "y": 5 },
+      "datasource": { "type": "grafana-postgresql-datasource", "uid": "streaming-pg" },
+      "fieldConfig": { "defaults": { "unit": "short", "color": { "mode": "fixed", "fixedColor": "blue" } }, "overrides": [] },
+      "options": { "orientation": "horizontal", "xField": "zone", "showValue": "never", "legend": { "showLegend": false } },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "grafana-postgresql-datasource", "uid": "streaming-pg" },
+          "editorMode": "code",
+          "rawQuery": true,
+          "format": "table",
+          "rawSql": "SELECT zone, sum(revenue_idr) AS revenue FROM zone_demand_1m WHERE window_start > now() - interval '15 minutes' GROUP BY zone ORDER BY revenue DESC"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "timeseries",
+      "title": "End-to-end latency per minute (produced -> stored)",
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 15 },
+      "datasource": { "type": "grafana-postgresql-datasource", "uid": "streaming-pg" },
+      "fieldConfig": { "defaults": { "unit": "s", "custom": { "lineWidth": 2, "fillOpacity": 10, "showPoints": "never" } }, "overrides": [] },
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "grafana-postgresql-datasource", "uid": "streaming-pg" },
+          "editorMode": "code",
+          "rawQuery": true,
+          "format": "time_series",
+          "rawSql": "SELECT date_trunc('minute', ingested_at) AS time, percentile_cont(0.5) WITHIN GROUP (ORDER BY extract(epoch FROM ingested_at - produced_at)) AS p50, percentile_cont(0.95) WITHIN GROUP (ORDER BY extract(epoch FROM ingested_at - produced_at)) AS p95 FROM rides WHERE $__timeFilter(ingested_at) GROUP BY 1 ORDER BY 1"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "type": "table",
+      "title": "Latest fraud alerts (5+ rides by one user in one minute)",
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 15 },
+      "datasource": { "type": "grafana-postgresql-datasource", "uid": "streaming-pg" },
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "options": { "showHeader": true },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "grafana-postgresql-datasource", "uid": "streaming-pg" },
+          "editorMode": "code",
+          "rawQuery": true,
+          "format": "table",
+          "rawSql": "SELECT flagged_at AS \"flagged at\", user_id AS \"user\", rides, fare_idr AS \"fare (IDR)\", window_start AS \"minute\" FROM fraud_alerts ORDER BY flagged_at DESC LIMIT 20"
+        }
+      ]
+    }
+  ]
+}

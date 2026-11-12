@@ -1,0 +1,47 @@
+{
+  "rows": {
+    "bronze.yellow_trips": 9554778,
+    "silver.trips": 9206805,
+    "silver.trips_rejected": 347972,
+    "gold.daily_zone_demand": 20356,
+    "gold.hourly_demand": 2183,
+    "gold.daily_kpis": 91
+  },
+  "reject_reasons": {
+    "non_positive_distance": 213243,
+    "negative_amount": 126269,
+    "duration_over_6h": 5434,
+    "dropoff_not_after_pickup": 2801,
+    "distance_over_200_miles": 169,
+    "pickup_outside_file_month": 56
+  },
+  "one_day_query": {
+    "day": "2024-02-14",
+    "bronze_seconds": 0.54,
+    "silver_seconds": 0.28,
+    "bronze_trips": 121771,
+    "silver_trips": 117639
+  },
+  "optimize": {
+    "files_removed": 556,
+    "files_added": 91
+  },
+  "silver_layout": {
+    "files": 91,
+    "size_mb": 821.4,
+    "partition_columns": [
+      "pickup_date"
+    ]
+  },
+  "time_travel": {
+    "versions": 4,
+    "rows_at_version_0": 2868204,
+    "rows_now": 9206805
+  },
+  "idempotent_rerun": {
+    "month": "2024-01",
+    "rows_inserted": 0,
+    "rows_deleted": 0,
+    "seconds": 51.9
+  }
+}

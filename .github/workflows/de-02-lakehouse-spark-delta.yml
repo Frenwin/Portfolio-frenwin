@@ -1,0 +1,39 @@
+name: DE-2 Lakehouse (Spark + Delta)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "01-data-engineer/de-02-lakehouse-spark-delta/**"
+      - ".github/workflows/de-02-lakehouse-spark-delta.yml"
+  pull_request:
+    paths:
+      - "01-data-engineer/de-02-lakehouse-spark-delta/**"
+      - ".github/workflows/de-02-lakehouse-spark-delta.yml"
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 01-data-engineer/de-02-lakehouse-spark-delta
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: 01-data-engineer/de-02-lakehouse-spark-delta/spark/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r spark/requirements.txt
+
+      - name: Pipeline tests (bronze, silver sync, gold) on local Delta tables
+        run: pytest -q tests

@@ -1,0 +1,104 @@
+# Start everything:  docker compose up -d --build
+# Grafana dashboard: http://localhost:3000 (anonymous view; admin / admin to edit)
+# Spark UI:          http://localhost:4041
+# Measured run:      see README "Reproduce the benchmark"
+
+x-app: &app
+  image: ride-stream:spark3.5.3
+  pull_policy: never
+  environment: &app-env
+    KAFKA_BOOTSTRAP: kafka:29092
+    KAFKA_TOPIC: rides
+    PGHOST: postgres
+    PGPORT: "5432"
+    PGDATABASE: streaming
+    PGUSER: streaming
+    PGPASSWORD: streaming
+    CHECKPOINT_DIR: /app/data/checkpoints
+  volumes:
+    - ./streaming:/app/streaming
+    - ./tests:/app/tests
+    - ./data:/app/data
+    - ./docs:/app/docs
+
+services:
+  kafka:
+    image: apache/kafka:3.8.1
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: INTERNAL://:29092,EXTERNAL://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    ports:
+      - "9092:9092"
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 > /dev/null 2>&1"]
+      interval: 5s
+      timeout: 10s
+      retries: 30
+
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: streaming
+      POSTGRES_PASSWORD: streaming
+      POSTGRES_DB: streaming
+    ports:
+      - "5435:5432"
+    volumes:
+      - ./postgres/init:/docker-entrypoint-initdb.d:ro
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U streaming -d streaming"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  grafana:
+    image: grafana/grafana:11.3.0
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/ride-stream.json
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  spark-job:
+    <<: *app
+    build: ./app
+    pull_policy: build
+    command: python -m streaming.spark_job
+    ports:
+      - "4041:4040"
+    depends_on:
+      kafka:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+
+  producer:
+    <<: *app
+    command: python -m streaming.producer --rate ${RATE:-200}
+    depends_on:
+      kafka:
+        condition: service_healthy
+      spark-job:
+        condition: service_started
+
+volumes:
+  pgdata:

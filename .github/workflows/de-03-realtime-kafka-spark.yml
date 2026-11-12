@@ -1,0 +1,67 @@
+name: DE-3 Streaming (Kafka + Spark)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "01-data-engineer/de-03-realtime-kafka-spark/**"
+      - ".github/workflows/de-03-realtime-kafka-spark.yml"
+  pull_request:
+    paths:
+      - "01-data-engineer/de-03-realtime-kafka-spark/**"
+      - ".github/workflows/de-03-realtime-kafka-spark.yml"
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 01-data-engineer/de-03-realtime-kafka-spark
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: streaming
+          POSTGRES_PASSWORD: streaming
+          POSTGRES_DB: streaming
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U streaming"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      PGHOST: localhost
+      PGPORT: "5432"
+      PGDATABASE: streaming
+      PGUSER: streaming
+      PGPASSWORD: streaming
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: 01-data-engineer/de-03-realtime-kafka-spark/app/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r app/requirements.txt
+
+      - name: Create schema
+        run: psql -v ON_ERROR_STOP=1 -f postgres/init/01-schema.sql
+
+      - name: Generator, transform and idempotent-sink tests
+        run: pytest -q tests
+        env:
+          RUN_DB_TESTS: "1"

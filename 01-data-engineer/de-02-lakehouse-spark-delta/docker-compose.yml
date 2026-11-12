@@ -1,0 +1,41 @@
+# Run the whole pipeline:   docker compose run --rm spark
+# Run tests:                docker compose run --rm spark pytest -q tests
+# Run the benchmark:        docker compose run --rm spark python -m benchmarks.benchmark
+# S3 (SeaweedFS) endpoint:  http://localhost:8333 · file browser: http://localhost:8888
+
+services:
+  seaweedfs:
+    image: chrislusf/seaweedfs:4.52
+    command: >
+      server -dir=/data -s3 -s3.config=/etc/seaweedfs/s3.json
+      -master.volumeSizeLimitMB=1024 -volume.max=200
+    ports:
+      - "8333:8333"   # S3 API
+      - "8888:8888"   # filer UI
+    volumes:
+      - ./s3/s3.json:/etc/seaweedfs/s3.json:ro
+      - seaweedfs-data:/data
+
+  spark:
+    build: ./spark
+    image: lakehouse-spark:3.5.3-delta3.2.1
+    command: python -m lakehouse.pipeline
+    environment:
+      LAKEHOUSE_ROOT: s3a://lakehouse
+      S3_ENDPOINT: http://seaweedfs:8333
+      S3_ACCESS_KEY: lakehouse
+      S3_SECRET_KEY: lakehouse-secret
+      SPARK_DRIVER_MEMORY: ${SPARK_DRIVER_MEMORY:-4g}
+    ports:
+      - "4040:4040"   # Spark UI while a job runs
+    volumes:
+      - ./lakehouse:/app/lakehouse
+      - ./benchmarks:/app/benchmarks
+      - ./tests:/app/tests
+      - ./data:/app/data
+      - ./docs:/app/docs
+    depends_on:
+      - seaweedfs
+
+volumes:
+  seaweedfs-data:

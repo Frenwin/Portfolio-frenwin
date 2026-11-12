@@ -15,6 +15,10 @@ venv/
 # Data (download with scripts; document the source in each README)
 **/data/raw/
 **/data/processed/
+**/data/landing/
+**/data/lakehouse/
+**/data/checkpoints/
+**/data/runs/
 *.parquet
 *.csv.gz
 

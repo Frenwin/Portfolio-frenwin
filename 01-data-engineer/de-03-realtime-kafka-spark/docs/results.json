@@ -1,0 +1,52 @@
+{
+  "run_id": "bench2",
+  "producer": {
+    "seconds": 192.2,
+    "messages_sent": 181810,
+    "achieved_rate_per_s": 946.1,
+    "injected": {
+      "duplicate": 1762,
+      "late": 3771,
+      "too_late": 754,
+      "malformed": 558,
+      "burst_users": 8
+    }
+  },
+  "correctness": {
+    "expected_rides": 178736,
+    "stored_rides": 178736,
+    "exact_match": true,
+    "duplicates_sent": 1762,
+    "late_sent": 3771,
+    "late_kept": 3771,
+    "too_late_sent": 754,
+    "too_late_kept": 0,
+    "malformed_sent": 558,
+    "malformed_rejected": 558
+  },
+  "fraud": {
+    "rule": ">= 5 rides by one user in one minute",
+    "bursts_injected": 8,
+    "bursts_detected": 8,
+    "false_alerts": 0,
+    "detection_latency_p50_s": 3.64,
+    "detection_latency_max_s": 5.39,
+    "burst_size": 6
+  },
+  "latency_s": {
+    "p50": 4.05,
+    "p95": 6.36,
+    "p99": 7.57,
+    "max": 8.58
+  },
+  "throughput": {
+    "rides_per_s_stored": 939.2,
+    "micro_batches": 49,
+    "avg_rows_per_batch": 3694,
+    "max_rows_per_batch": 4987
+  },
+  "final_vs_realtime_windows": {
+    "windows_compared": 48,
+    "identical": 48
+  }
+}

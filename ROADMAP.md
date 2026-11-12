@@ -119,15 +119,15 @@ Daftar ini disusun dari requirement yang paling sering muncul di lowongan Data/A
 - **Output:** README dengan diagram arsitektur + ERD, dbt docs, CI yang menjalankan `dbt build`, data dictionary.
 - **Stretch:** Terraform untuk dataset BigQuery, alert Slack saat DAG gagal.
 
-### DE-2 · Lakehouse Medallion — Rab, 18 Nov (1 hari)
+### DE-2 · Lakehouse Medallion — Rab, 18 Nov (1 hari) · **Selesai 12 Nov** → [lihat project](01-data-engineer/de-02-lakehouse-spark-delta/)
 
 - **Kenapa industri butuh:** arsitektur lakehouse (Databricks, Delta, Iceberg) menggantikan data lake mentah di banyak perusahaan.
 - **Dataset:** [NYC TLC Trip Record Data](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page) (Parquet, puluhan juta baris).
-- **Stack:** PySpark, Delta Lake, MinIO (S3-compatible) di Docker.
+- **Stack:** PySpark, Delta Lake, SeaweedFS (S3-compatible; image MinIO komunitas sudah tidak tersedia) di Docker.
 - **Scope MVP:** bronze (raw) → silver (dibersihkan, dedup, schema enforcement) → gold (agregat per zona/jam); partitioning + `MERGE` upsert + time travel.
 - **Output:** README dengan perbandingan waktu query sebelum/sesudah partitioning, notebook atau job script.
 
-### DE-3 · Real-time Streaming Pipeline — Kam–Jum, 19–20 Nov (2 hari)
+### DE-3 · Real-time Streaming Pipeline — Kam–Jum, 19–20 Nov (2 hari) · **Selesai 12 Nov** → [lihat project](01-data-engineer/de-03-realtime-kafka-spark/)
 
 - **Kenapa industri butuh:** ride-hailing, fintech, dan e-commerce memproses event secara real-time (fraud, surge pricing, monitoring).
 - **Dataset:** generator event transaksi/perjalanan buatan sendiri (Python producer).
@@ -350,8 +350,8 @@ Semua project ada di satu repo publik. **Push minimal sekali sehari**, termasuk 
 
 **Minggu 1 — Data Engineer**
 - [x] DE-1 `de-01-elt-airflow-dbt`
-- [ ] DE-2 `de-02-lakehouse-spark-delta`
-- [ ] DE-3 `de-03-realtime-kafka-spark`
+- [x] DE-2 `de-02-lakehouse-spark-delta`
+- [x] DE-3 `de-03-realtime-kafka-spark`
 - [ ] DE-4 `de-04-cdc-debezium`
 
 **Minggu 2 — Data Analyst**
