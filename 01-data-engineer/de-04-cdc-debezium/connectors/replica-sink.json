@@ -1,0 +1,16 @@
+{
+  "connector.class": "io.debezium.connector.jdbc.JdbcSinkConnector",
+  "tasks.max": "1",
+  "topics": "shop.public.customers,shop.public.products,shop.public.orders,shop.public.order_items,shop.public.cdc_probe",
+  "connection.url": "jdbc:postgresql://replica-db:5432/replica",
+  "connection.username": "replica",
+  "connection.password": "replica",
+  "insert.mode": "upsert",
+  "delete.enabled": "true",
+  "primary.key.mode": "record_key",
+  "schema.evolution": "basic",
+  "transforms": "route",
+  "transforms.route.type": "org.apache.kafka.connect.transforms.RegexRouter",
+  "transforms.route.regex": "shop\\.public\\.(.*)",
+  "transforms.route.replacement": "$1"
+}

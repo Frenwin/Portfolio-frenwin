@@ -1,0 +1,66 @@
+{
+  "seeded_rows": {
+    "customers": 5000,
+    "products": 300,
+    "orders": 20000,
+    "order_items": 50063
+  },
+  "snapshot_seconds": 14.0,
+  "traffic": {
+    "seconds": 180.9,
+    "transactions": 8999,
+    "per_second": 49.7,
+    "by_type": {
+      "advance_status": 3489,
+      "cancel_order": 470,
+      "change_price": 703,
+      "move_customer": 650,
+      "new_order": 3223,
+      "purge_cancelled": 464,
+      "schema_change": 1
+    }
+  },
+  "replication_lag_s": {
+    "probes": 71,
+    "p50": 0.52,
+    "p95": 0.93,
+    "max": 1.02
+  },
+  "converged_after_traffic_s": 0.1,
+  "final_comparison": {
+    "customers": {
+      "source_rows": 5000,
+      "replica_rows": 5000,
+      "equal": true
+    },
+    "products": {
+      "source_rows": 300,
+      "replica_rows": 300,
+      "equal": true
+    },
+    "orders": {
+      "source_rows": 22759,
+      "replica_rows": 22759,
+      "equal": true
+    },
+    "order_items": {
+      "source_rows": 57162,
+      "replica_rows": 57162,
+      "equal": true
+    }
+  },
+  "schema_change": {
+    "column_added_in_source": "customers.loyalty_tier",
+    "column_present_in_replica": true,
+    "replica_rows_with_value": 414
+  },
+  "history": {
+    "orders_in_source": 22759,
+    "orders_with_wrong_current_status": 0,
+    "deleted_orders_still_current_in_history": 0,
+    "deleted_orders_recorded": 464,
+    "status_events": 27646,
+    "avg_statuses_per_order": 1.17,
+    "max_statuses_per_order": 5
+  }
+}

@@ -26,14 +26,14 @@ Every later week reads from data. If a pipeline double-counts orders or silently
 | DE-1 | [**Batch ELT to a star-schema warehouse**](de-01-elt-airflow-dbt/) | An orchestrated, idempotent pipeline with 70 data tests, an SCD2 dimension and CI | Airflow, dbt, PostgreSQL, Docker, GitHub Actions | ✅ |
 | DE-2 | [**Lakehouse with bronze/silver/gold layers**](de-02-lakehouse-spark-delta/) | 9.5M taxi trips validated, de-duplicated and partitioned on S3 storage; idempotent month re-loads, time travel | PySpark, Delta Lake, SeaweedFS (S3) | ✅ |
 | DE-3 | [**Real-time ride event streaming**](de-03-realtime-kafka-spark/) | Exactly-once results from a faulty stream: duplicates, late events, malformed messages, fraud alerts in seconds | Kafka, Spark Structured Streaming, PostgreSQL, Grafana | ✅ |
-| DE-4 | Change Data Capture | Inserts, updates and deletes replicated from an operational database | PostgreSQL, Debezium, Kafka Connect | ⬜ |
+| DE-4 | [**Change Data Capture**](de-04-cdc-debezium/) | Inserts, updates and deletes replicated from a live database in 0.5 s, verified by checksum; order status history kept | PostgreSQL, Debezium, Kafka Connect | ✅ |
 
 ## Skills covered
 
 | Skill | Where it is shown |
 | --- | --- |
 | Orchestration and scheduling | DE-1 |
-| Dimensional modeling (star schema, SCD Type 2) | DE-1 |
+| Dimensional modeling (star schema, SCD Type 2) | DE-1, DE-4 |
 | Data quality testing and freshness checks | DE-1, DE-3 |
 | Idempotent and incremental loading | DE-1, DE-2 |
 | Distributed processing and lakehouse formats | DE-2, DE-3 |

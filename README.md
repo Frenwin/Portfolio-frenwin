@@ -4,7 +4,7 @@
 
 **Frenwin** · Data Science @ Telkom University · AI Engineer (NLP & Computer Vision)
 
-[![Progress](https://img.shields.io/badge/progress-3%20of%2016%20projects-2ea44f)](#progress)
+[![Progress](https://img.shields.io/badge/progress-4%20of%2016%20projects-2ea44f)](#progress)
 [![Built in public](https://img.shields.io/badge/built%20in%20public-daily%20commits-blue)](DEVLOG.md)
 [![License: MIT](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
 
@@ -38,7 +38,7 @@ flowchart LR
 
 ## Progress
 
-**3 of 16 projects done** · `███░░░░░░░░░░░░░` · daily log in [DEVLOG.md](DEVLOG.md)
+**4 of 16 projects done** · `████░░░░░░░░░░░░` · **Week 1 complete** · daily log in [DEVLOG.md](DEVLOG.md)
 
 Status: ✅ Done · 🔄 In progress · ⬜ Planned
 
@@ -49,7 +49,7 @@ Status: ✅ Done · 🔄 In progress · ⬜ Planned
 | DE-1 | [**Batch ELT to a star-schema warehouse**](01-data-engineer/de-01-elt-airflow-dbt/) | Orchestrated, idempotent pipeline with Airflow + dbt, 70 data tests, SCD2, CI | ✅ |
 | DE-2 | [**Lakehouse with bronze/silver/gold layers**](01-data-engineer/de-02-lakehouse-spark-delta/) | 9.5M trips on S3 storage with Delta Lake; idempotent month re-loads; a MERGE redesign that cut silver time 2.6× | ✅ |
 | DE-3 | [**Real-time ride event streaming**](01-data-engineer/de-03-realtime-kafka-spark/) | Kafka + Spark Structured Streaming with exactly-once results despite duplicates, late events and replays; live Grafana | ✅ |
-| DE-4 | Change Data Capture | Replicating a live database with Debezium | ⬜ |
+| DE-4 | [**Change Data Capture**](01-data-engineer/de-04-cdc-debezium/) | Live replica of a shop database via the WAL: 0.5 s lag, checksum-identical after deletes and a schema change, plus full order history | ✅ |
 
 ### Week 2 · Data Analyst — explain what happened
 
@@ -79,6 +79,11 @@ Status: ✅ Done · 🔄 In progress · ⬜ Planned
 | AI-4 | Object detection on edge | YOLO exported to ONNX and benchmarked on CPU | ⬜ |
 
 ## Latest highlights
+
+**[DE-4 · Change Data Capture](01-data-engineer/de-04-cdc-debezium/)**: Debezium streams every insert, update and delete from a live PostgreSQL into Kafka without querying its tables.
+- Replica lag **0.52 s** (p50); after 8,999 transactions, 464 hard deletes and a mid-traffic schema change, all 4 tables are **row-by-row checksum identical**.
+- A second consumer keeps every order's status history (SCD2), answering "how long do orders wait in *paid*?", which a mirror cannot.
+- The first run failed; the write-up shows why (a broker stall, a connector that said RUNNING while consuming nothing, a 5-minute regex-subscription blind spot) and how it was fixed.
 
 **[DE-3 · Real-time ride streaming](01-data-engineer/de-03-realtime-kafka-spark/)**: ~1,000 events/s through Kafka and Spark with duplicates, late events, malformed messages and fraud bursts injected on purpose.
 - **178,736 of 178,736** rides stored exactly once; **8 of 8** fraud bursts flagged within 6 s, with no false alerts.

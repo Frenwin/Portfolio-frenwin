@@ -1,0 +1,18 @@
+{
+  "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+  "tasks.max": "1",
+  "database.hostname": "source-db",
+  "database.port": "5432",
+  "database.user": "debezium",
+  "database.password": "debezium",
+  "database.dbname": "shop",
+  "topic.prefix": "shop",
+  "table.include.list": "public.customers,public.products,public.orders,public.order_items,public.cdc_probe",
+  "plugin.name": "pgoutput",
+  "publication.name": "dbz_publication",
+  "publication.autocreate.mode": "disabled",
+  "slot.name": "debezium_shop",
+  "snapshot.mode": "initial",
+  "heartbeat.interval.ms": "10000",
+  "tombstones.on.delete": "true"
+}

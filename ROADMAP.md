@@ -135,7 +135,7 @@ Daftar ini disusun dari requirement yang paling sering muncul di lowongan Data/A
 - **Scope MVP:** producer → topic Kafka → windowed aggregation + watermark untuk late data → sink ke PostgreSQL → dashboard Grafana real-time + aturan alert sederhana (mis. transaksi mencurigakan).
 - **Output:** README dengan diagram, throughput (events/detik) dan latency end-to-end, GIF dashboard.
 
-### DE-4 · Change Data Capture — Sab, 21 Nov (1 hari)
+### DE-4 · Change Data Capture — Sab, 21 Nov (1 hari) · **Selesai 13 Nov** → [lihat project](01-data-engineer/de-04-cdc-debezium/)
 
 - **Kenapa industri butuh:** CDC adalah cara standar menyalin database operasional ke warehouse tanpa membebani database produksi.
 - **Stack:** PostgreSQL (logical replication), Debezium, Kafka Connect, sink ke PostgreSQL/warehouse.
@@ -352,7 +352,7 @@ Semua project ada di satu repo publik. **Push minimal sekali sehari**, termasuk 
 - [x] DE-1 `de-01-elt-airflow-dbt`
 - [x] DE-2 `de-02-lakehouse-spark-delta`
 - [x] DE-3 `de-03-realtime-kafka-spark`
-- [ ] DE-4 `de-04-cdc-debezium`
+- [x] DE-4 `de-04-cdc-debezium`
 
 **Minggu 2 — Data Analyst**
 - [ ] DA-1 `da-01-sql-ecommerce-case-study`

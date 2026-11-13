@@ -1,0 +1,65 @@
+name: DE-4 CDC (Debezium)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "01-data-engineer/de-04-cdc-debezium/**"
+      - ".github/workflows/de-04-cdc-debezium.yml"
+  pull_request:
+    paths:
+      - "01-data-engineer/de-04-cdc-debezium/**"
+      - ".github/workflows/de-04-cdc-debezium.yml"
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 01-data-engineer/de-04-cdc-debezium
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: replica
+          POSTGRES_PASSWORD: replica
+          POSTGRES_DB: replica
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U replica"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      PGHOST: localhost
+      PGUSER: replica
+      PGPASSWORD: replica
+      PGDATABASE: replica
+      TEST_DSN: host=localhost port=5432 dbname=replica user=replica password=replica
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: 01-data-engineer/de-04-cdc-debezium/app/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r app/requirements.txt
+
+      - name: Validate connector configs are valid JSON
+        run: for f in connectors/*.json; do python -m json.tool "$f" > /dev/null && echo "ok $f"; done
+
+      - name: Create history schema
+        run: psql -v ON_ERROR_STOP=1 -f replica-db/init/01-history.sql
+
+      - name: Event parsing, idempotent history and checksum tests
+        run: pytest -q tests
+        env:
+          RUN_DB_TESTS: "1"

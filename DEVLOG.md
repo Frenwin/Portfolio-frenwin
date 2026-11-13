@@ -12,3 +12,7 @@ Daily progress log, newest entries at the bottom. Each entry is added by `script
 
 - DE-2: done - Delta lakehouse on S3, 9.55M trips, MERGE redesign cut silver 674s to 256s
 - DE-3: done - Kafka + Spark streaming, exactly-once 178,736/178,736 rides, crash-tested, Grafana
+
+## 2026-11-13
+
+- DE-4: done - Debezium CDC, 0.52s replica lag, checksum-identical after deletes + schema change, order status SCD2. Week 1 complete
