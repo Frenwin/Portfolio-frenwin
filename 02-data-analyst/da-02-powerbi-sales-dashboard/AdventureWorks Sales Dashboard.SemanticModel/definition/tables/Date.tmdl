@@ -1,0 +1,70 @@
+table Date
+	lineageTag: 2761ed8d-7213-5a36-992a-a24168683676
+	dataCategory: Time
+
+	column DateKey
+		dataType: int64
+		isHidden
+		lineageTag: b11d7d15-1012-510c-b308-64a75a2deb19
+		summarizeBy: none
+		sourceColumn: DateKey
+
+	column Date
+		dataType: dateTime
+		isKey
+		formatString: yyyy-mm-dd
+		lineageTag: 0db8f2c9-8e24-5014-b42c-0be4a2159116
+		summarizeBy: none
+		sourceColumn: Date
+
+	column 'Fiscal Year'
+		dataType: string
+		lineageTag: 1b0f6b7b-dcbf-5ea0-875a-6b15de4e9a92
+		summarizeBy: none
+		sourceColumn: Fiscal Year
+
+	column 'Fiscal Quarter'
+		dataType: string
+		lineageTag: 9a07b7a6-c0a8-5695-a2fc-2ccbe91129a8
+		summarizeBy: none
+		sourceColumn: Fiscal Quarter
+
+	column Month
+		dataType: string
+		sortByColumn: MonthKey
+		lineageTag: 51e1ab94-1938-5669-ab1c-640f42552470
+		summarizeBy: none
+		sourceColumn: Month
+
+	column 'Full Date'
+		dataType: string
+		isHidden
+		lineageTag: 0e3a4524-062f-5236-86f6-b7bd37806f40
+		summarizeBy: none
+		sourceColumn: Full Date
+
+	column MonthKey
+		dataType: int64
+		isHidden
+		lineageTag: 6acfbab5-3777-52ba-bb53-00a9bd13c16f
+		summarizeBy: none
+		sourceColumn: MonthKey
+
+	column 'Month Start'
+		dataType: dateTime
+		formatString: mmm yyyy
+		lineageTag: e5d248b1-0d9c-5b9c-ad1d-4fc2894ee827
+		summarizeBy: none
+		sourceColumn: Month Start
+
+	partition Date = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents(SourceFile), null, true),
+				    Data = Source{[Item="Date",Kind="Table"]}[Data],
+				    Typed = Table.TransformColumnTypes(Data, {{"DateKey", Int64.Type}, {"Date", type date}, {"Fiscal Year", type text}, {"Fiscal Quarter", type text}, {"Month", type text}, {"Full Date", type text}, {"MonthKey", Int64.Type}}),
+				    Trimmed = Table.SelectRows(Typed, each [Date] <= #date(2020, 6, 30)),
+				    WithMonthStart = Table.AddColumn(Trimmed, "Month Start", each Date.StartOfMonth([Date]), type date)
+				in
+				    WithMonthStart

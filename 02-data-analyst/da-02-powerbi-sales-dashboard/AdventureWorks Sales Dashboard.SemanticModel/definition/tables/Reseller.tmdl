@@ -1,0 +1,61 @@
+table Reseller
+	lineageTag: d6a4afe2-1b3a-57e0-8654-8f4d40d6b2cc
+
+	column ResellerKey
+		dataType: int64
+		isHidden
+		lineageTag: a492ceb6-0581-5e73-97e1-1f6841bbb47e
+		summarizeBy: none
+		sourceColumn: ResellerKey
+
+	column 'Reseller ID'
+		dataType: string
+		lineageTag: ceb325c7-119c-5d20-8b68-48bc5202f0ac
+		summarizeBy: none
+		sourceColumn: Reseller ID
+
+	column 'Business Type'
+		dataType: string
+		lineageTag: d9a75ef2-a212-5858-9313-dec636b701e7
+		summarizeBy: none
+		sourceColumn: Business Type
+
+	column Reseller
+		dataType: string
+		lineageTag: 77c35763-fde9-5817-812a-7359c5257e9f
+		summarizeBy: none
+		sourceColumn: Reseller
+
+	column City
+		dataType: string
+		lineageTag: 47ae36df-61d1-55a7-aa44-6eea0741367a
+		summarizeBy: none
+		sourceColumn: City
+
+	column 'State-Province'
+		dataType: string
+		lineageTag: 0ee5385f-6e85-53fb-a3c3-39d340f95bb3
+		summarizeBy: none
+		sourceColumn: State-Province
+
+	column 'Country-Region'
+		dataType: string
+		lineageTag: 3ebb0787-2237-536e-a881-5533736548c1
+		summarizeBy: none
+		sourceColumn: Country-Region
+
+	column 'Postal Code'
+		dataType: string
+		lineageTag: 9604807e-9062-543b-8a00-aa0eec18ce1f
+		summarizeBy: none
+		sourceColumn: Postal Code
+
+	partition Reseller = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents(SourceFile), null, true),
+				    Data = Source{[Item="Reseller",Kind="Table"]}[Data],
+				    Typed = Table.TransformColumnTypes(Data, {{"ResellerKey", Int64.Type}, {"Reseller ID", type text}, {"Business Type", type text}, {"Reseller", type text}, {"City", type text}, {"State-Province", type text}, {"Country-Region", type text}, {"Postal Code", type text}})
+				in
+				    Typed

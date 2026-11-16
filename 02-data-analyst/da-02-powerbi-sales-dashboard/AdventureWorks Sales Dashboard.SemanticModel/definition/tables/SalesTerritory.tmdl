@@ -1,0 +1,37 @@
+table SalesTerritory
+	lineageTag: 5fe7285a-871c-589f-b660-86e8a5ac8c4e
+
+	column SalesTerritoryKey
+		dataType: int64
+		isHidden
+		lineageTag: ea2ddac7-2146-56f8-bff2-ae78b6bef129
+		summarizeBy: none
+		sourceColumn: SalesTerritoryKey
+
+	column Region
+		dataType: string
+		lineageTag: bf0a77bb-200b-5b27-b9cf-25f87bbaacf2
+		summarizeBy: none
+		sourceColumn: Region
+
+	column Country
+		dataType: string
+		lineageTag: e2c5392e-8594-572a-85d5-2428bfb518bc
+		summarizeBy: none
+		sourceColumn: Country
+
+	column Group
+		dataType: string
+		lineageTag: 93e4b107-9b22-59bf-bbea-cf67724327d9
+		summarizeBy: none
+		sourceColumn: Group
+
+	partition SalesTerritory = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents(SourceFile), null, true),
+				    Data = Source{[Item="SalesTerritory",Kind="Table"]}[Data],
+				    Typed = Table.TransformColumnTypes(Data, {{"SalesTerritoryKey", Int64.Type}, {"Region", type text}, {"Country", type text}, {"Group", type text}})
+				in
+				    Typed

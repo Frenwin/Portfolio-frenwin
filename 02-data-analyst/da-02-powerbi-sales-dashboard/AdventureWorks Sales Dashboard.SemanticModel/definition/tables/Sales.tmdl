@@ -1,0 +1,419 @@
+table Sales
+	lineageTag: 011f78f6-efa7-5755-98c2-8bb19ae47aad
+
+	measure 'Total Sales' =
+			SUM ( Sales[Sales Amount] )
+		formatString: \$#,0
+		displayFolder: Revenue
+		lineageTag: 8eb20442-1aaa-57f9-9dd5-f1676df724f2
+
+	measure 'Total Cost' =
+			SUM ( Sales[Total Product Cost] )
+		formatString: \$#,0
+		displayFolder: Revenue
+		lineageTag: 092bf8ff-e0ce-5bec-9f87-374aa1880174
+
+	measure 'Gross Profit' =
+			[Total Sales] - [Total Cost]
+		formatString: \$#,0
+		displayFolder: Revenue
+		lineageTag: 3d7ae672-eee8-582e-aa60-d928b08f3e17
+
+	measure 'Gross Margin %' =
+			DIVIDE ( [Gross Profit], [Total Sales] )
+		formatString: 0.0%
+		displayFolder: Revenue
+		lineageTag: f2f50ac3-88c0-550f-bea4-7de2d9ec7027
+
+	measure Discount =
+			// The source "Unit Price Discount Pct" column is always 0, but list and sales amounts differ.
+			SUMX ( Sales, Sales[Extended Amount] - Sales[Sales Amount] )
+		formatString: \$#,0
+		displayFolder: Revenue
+		lineageTag: 5149886d-c39b-5a94-be70-d619b276d181
+
+	measure Orders =
+			// Orders live on the SalesOrder dimension; SUMMARIZE over the fact keeps the count
+			// responsive to every filter on Sales (a plain DISTINCTCOUNT on the dimension would not be).
+			COUNTROWS ( SUMMARIZE ( Sales, SalesOrder[Sales Order] ) )
+		formatString: #,0
+		displayFolder: Volume
+		lineageTag: 3ef3bf11-7830-5fe7-9e46-06c503271087
+
+	measure Units =
+			SUM ( Sales[Order Quantity] )
+		formatString: #,0
+		displayFolder: Volume
+		lineageTag: 12fec8a1-b4dd-5fdd-b37e-06176e3cb2f2
+
+	measure 'Avg Order Value' =
+			DIVIDE ( [Total Sales], [Orders] )
+		formatString: \$#,0.00
+		displayFolder: Volume
+		lineageTag: 5f750dad-c47d-588a-87f9-acff5ea07165
+
+	measure 'Total Sales PY' =
+			CALCULATE ( [Total Sales], SAMEPERIODLASTYEAR ( 'Date'[Date] ) )
+		formatString: \$#,0
+		displayFolder: Time intelligence
+		lineageTag: c8c5e0a3-b347-5e2c-9739-ad84eebcf3bb
+
+	measure 'Sales YoY %' =
+			DIVIDE ( [Total Sales] - [Total Sales PY], [Total Sales PY] )
+		formatString: 0.0%
+		displayFolder: Time intelligence
+		lineageTag: 3fe01d7a-3c93-578a-a325-2488e376149c
+
+	measure 'Gross Profit PY' =
+			CALCULATE ( [Gross Profit], SAMEPERIODLASTYEAR ( 'Date'[Date] ) )
+		formatString: \$#,0
+		displayFolder: Time intelligence
+		lineageTag: 53e03b4e-b990-56c1-9e58-59002a03b591
+
+	measure 'Profit YoY %' =
+			DIVIDE ( [Gross Profit] - [Gross Profit PY], [Gross Profit PY] )
+		formatString: 0.0%
+		displayFolder: Time intelligence
+		lineageTag: 762a5ed8-6c6d-5d85-b980-23fc899fff05
+
+	measure 'Gross Margin PY' =
+			CALCULATE ( [Gross Margin %], SAMEPERIODLASTYEAR ( 'Date'[Date] ) )
+		formatString: 0.0%
+		displayFolder: Time intelligence
+		lineageTag: 668a212d-6b4d-5a60-987d-a880212d25fc
+
+	measure 'Margin Change pp' =
+			IF ( NOT ISBLANK ( [Gross Margin PY] ), ( [Gross Margin %] - [Gross Margin PY] ) * 100 )
+		formatString: +0.0;-0.0;0.0
+		displayFolder: Time intelligence
+		lineageTag: da9397d1-d48b-5fb9-a284-306fbd8f28b2
+
+	measure 'Sales FYTD' =
+			TOTALYTD ( [Total Sales], 'Date'[Date], "6/30" )
+		formatString: \$#,0
+		displayFolder: Time intelligence
+		lineageTag: 6a6cebef-5883-5155-b7a3-ff15c4204874
+
+	measure 'Sales PY FYTD' =
+			CALCULATE ( [Sales FYTD], SAMEPERIODLASTYEAR ( 'Date'[Date] ) )
+		formatString: \$#,0
+		displayFolder: Time intelligence
+		lineageTag: 6d895719-ce55-512d-b09a-83784e4d1722
+
+	measure 'Reseller Share %' =
+			DIVIDE ( CALCULATE ( [Total Sales], SalesOrder[Channel] = "Reseller" ), [Total Sales] )
+		formatString: 0.0%
+		displayFolder: Diagnostics
+		lineageTag: f8079e7f-5f84-5dbd-bcae-f2b7b5fc6534
+
+	measure 'Loss Lines' =
+			COUNTROWS ( FILTER ( Sales, Sales[Sales Amount] < Sales[Total Product Cost] ) )
+		formatString: #,0
+		displayFolder: Diagnostics
+		lineageTag: 8e4972d8-2425-5650-a599-4c84f3939056
+
+	measure 'Loss Amount' =
+			SUMX (
+			FILTER ( Sales, Sales[Sales Amount] < Sales[Total Product Cost] ),
+			Sales[Total Product Cost] - Sales[Sales Amount]
+			)
+		formatString: \$#,0
+		displayFolder: Diagnostics
+		lineageTag: 6e6372c7-8c0a-5a2b-9013-e68fdeedd004
+
+	measure 'Profit Rank' =
+			IF (
+			ISINSCOPE ( 'Product'[Product] ),
+			RANKX ( ALLSELECTED ( 'Product'[Product] ), [Gross Profit], , DESC, DENSE )
+			)
+		formatString: #,0
+		displayFolder: Diagnostics
+		lineageTag: 22978c18-7f97-56f1-908a-49b25a3634d7
+
+	measure 'Gross Profit Top 10' =
+			// Lets a bar chart show only the 10 most profitable products, without a visual-level filter.
+			IF ( [Profit Rank] <= 10, [Gross Profit] )
+		formatString: \$#,0
+		displayFolder: Diagnostics
+		lineageTag: 8352e105-5ceb-5a38-b8b4-03026c498c41
+
+	measure 'KPI Fiscal Year' =
+			IF (
+			HASONEVALUE ( 'Date'[Fiscal Year] ),
+			VALUES ( 'Date'[Fiscal Year] ),
+			CALCULATE ( MAX ( 'Date'[Fiscal Year] ), REMOVEFILTERS ( 'Date' ) )
+			)
+		displayFolder: KPI
+		lineageTag: dd7fa2e3-6731-5828-928f-0c3a27aa1f84
+
+	measure 'KPI Prior Year' =
+			"FY" & ( VALUE ( RIGHT ( [KPI Fiscal Year], 4 ) ) - 1 )
+		displayFolder: KPI
+		lineageTag: b5f619e2-3ce5-5e15-8360-a2aa54a6df2f
+
+	measure 'KPI Period' =
+			[KPI Fiscal Year] & " vs " & [KPI Prior Year]
+		displayFolder: KPI
+		lineageTag: 4fc5b071-9f41-5034-ad9f-cf81b47da986
+
+	measure 'KPI Sales' =
+			VAR fy = [KPI Fiscal Year]
+			RETURN CALCULATE ( [Total Sales], REMOVEFILTERS ( 'Date' ), 'Date'[Fiscal Year] = fy )
+		formatString: \$#,0
+		displayFolder: KPI
+		lineageTag: e1c458db-712e-5e25-8af5-2f666d06137f
+
+	measure 'KPI Sales PY' =
+			VAR fy = [KPI Prior Year]
+			RETURN CALCULATE ( [Total Sales], REMOVEFILTERS ( 'Date' ), 'Date'[Fiscal Year] = fy )
+		formatString: \$#,0
+		displayFolder: KPI
+		lineageTag: a71ce250-69e9-5779-b5d5-9437f2dc38db
+
+	measure 'KPI Profit' =
+			VAR fy = [KPI Fiscal Year]
+			RETURN CALCULATE ( [Gross Profit], REMOVEFILTERS ( 'Date' ), 'Date'[Fiscal Year] = fy )
+		formatString: \$#,0
+		displayFolder: KPI
+		lineageTag: 79c4427b-41f2-5e65-a85d-c7ad1c5a7c34
+
+	measure 'KPI Profit PY' =
+			VAR fy = [KPI Prior Year]
+			RETURN CALCULATE ( [Gross Profit], REMOVEFILTERS ( 'Date' ), 'Date'[Fiscal Year] = fy )
+		formatString: \$#,0
+		displayFolder: KPI
+		lineageTag: 5ebf04df-a91e-50f3-bae8-a73e358d94d0
+
+	measure 'KPI Margin' =
+			DIVIDE ( [KPI Profit], [KPI Sales] )
+		formatString: 0.0%
+		displayFolder: KPI
+		lineageTag: dfa43172-d551-555d-8dd7-87d4d55c6942
+
+	measure 'KPI Margin PY' =
+			DIVIDE ( [KPI Profit PY], [KPI Sales PY] )
+		formatString: 0.0%
+		displayFolder: KPI
+		lineageTag: 2f1de99e-9a04-5c1b-b503-2c3700782799
+
+	measure 'KPI Orders' =
+			VAR fy = [KPI Fiscal Year]
+			RETURN CALCULATE ( [Orders], REMOVEFILTERS ( 'Date' ), 'Date'[Fiscal Year] = fy )
+		formatString: #,0
+		displayFolder: KPI
+		lineageTag: fb684bff-480e-5774-96cb-454fc079bb8b
+
+	measure 'KPI Orders PY' =
+			VAR fy = [KPI Prior Year]
+			RETURN CALCULATE ( [Orders], REMOVEFILTERS ( 'Date' ), 'Date'[Fiscal Year] = fy )
+		formatString: #,0
+		displayFolder: KPI
+		lineageTag: 5838e4a6-2e33-5ab2-a652-0facb46ef79a
+
+	measure 'KPI AOV' =
+			DIVIDE ( [KPI Sales], [KPI Orders] )
+		formatString: \$#,0.00
+		displayFolder: KPI
+		lineageTag: 14406365-5622-5e6f-9bd2-0e51a58f5819
+
+	measure 'KPI AOV PY' =
+			DIVIDE ( [KPI Sales PY], [KPI Orders PY] )
+		formatString: \$#,0.00
+		displayFolder: KPI
+		lineageTag: d3eceab7-38d0-5fad-86e4-31ef2caa3d9e
+
+	measure 'KPI Sales Delta' =
+			VAR prev = [KPI Sales PY]
+			VAR d = DIVIDE ( [KPI Sales] - prev, prev )
+			RETURN IF ( ISBLANK ( prev ), "No prior year", IF ( d >= 0, "▲ ", "▼ " ) & FORMAT ( ABS ( d ), "0.0%" ) & " vs " & [KPI Prior Year] )
+		displayFolder: KPI
+		lineageTag: 71a485d8-a57e-5aff-a236-71cb8e53607e
+
+	measure 'KPI Profit Delta' =
+			VAR prev = [KPI Profit PY]
+			VAR d = DIVIDE ( [KPI Profit] - prev, prev )
+			RETURN IF ( ISBLANK ( prev ), "No prior year", IF ( d >= 0, "▲ ", "▼ " ) & FORMAT ( ABS ( d ), "0.0%" ) & " vs " & [KPI Prior Year] )
+		displayFolder: KPI
+		lineageTag: 446c161a-6b9c-52a9-b7c6-c62609920fdd
+
+	measure 'KPI Margin Delta' =
+			VAR prev = [KPI Margin PY]
+			VAR d = ( [KPI Margin] - prev ) * 100
+			RETURN IF ( ISBLANK ( prev ), "No prior year", IF ( d >= 0, "▲ ", "▼ " ) & FORMAT ( ABS ( d ), "0.0" ) & " pp vs " & [KPI Prior Year] )
+		displayFolder: KPI
+		lineageTag: 3b78eb65-e7eb-5d72-8e0b-e85492ea3887
+
+	measure 'KPI Orders Delta' =
+			VAR prev = [KPI Orders PY]
+			VAR d = DIVIDE ( [KPI Orders] - prev, prev )
+			RETURN IF ( ISBLANK ( prev ), "No prior year", IF ( d >= 0, "▲ ", "▼ " ) & FORMAT ( ABS ( d ), "0.0%" ) & " vs " & [KPI Prior Year] )
+		displayFolder: KPI
+		lineageTag: 96df18a6-00bc-503c-b25b-0f773dfa7719
+
+	measure 'KPI AOV Delta' =
+			VAR prev = [KPI AOV PY]
+			VAR d = DIVIDE ( [KPI AOV] - prev, prev )
+			RETURN IF ( ISBLANK ( prev ), "No prior year", IF ( d >= 0, "▲ ", "▼ " ) & FORMAT ( ABS ( d ), "0.0%" ) & " vs " & [KPI Prior Year] )
+		displayFolder: KPI
+		lineageTag: 055e962f-8b6f-5d52-8ff7-96921f5ba436
+
+	measure 'KPI Sales Color' =
+			IF ( ISBLANK ( [KPI Sales PY] ), "#6B7280", IF ( [KPI Sales] >= [KPI Sales PY], "#15803D", "#B91C1C" ) )
+		displayFolder: KPI
+		lineageTag: 7bce15ba-75be-584f-890d-f4cdcaf62b1e
+
+	measure 'KPI Profit Color' =
+			IF ( ISBLANK ( [KPI Profit PY] ), "#6B7280", IF ( [KPI Profit] >= [KPI Profit PY], "#15803D", "#B91C1C" ) )
+		displayFolder: KPI
+		lineageTag: 1994bf2c-fc49-5a84-97ab-38bdd50e83ab
+
+	measure 'KPI Margin Color' =
+			IF ( ISBLANK ( [KPI Margin PY] ), "#6B7280", IF ( [KPI Margin] >= [KPI Margin PY], "#15803D", "#B91C1C" ) )
+		displayFolder: KPI
+		lineageTag: 0aba9cb0-b38d-5c74-b806-cd0d51758deb
+
+	measure 'KPI Orders Color' =
+			IF ( ISBLANK ( [KPI Orders PY] ), "#6B7280", IF ( [KPI Orders] >= [KPI Orders PY], "#15803D", "#B91C1C" ) )
+		displayFolder: KPI
+		lineageTag: fd8d44ca-55a5-5b92-86f9-283ee96b2c69
+
+	measure 'KPI AOV Color' =
+			IF ( ISBLANK ( [KPI AOV PY] ), "#6B7280", IF ( [KPI AOV] >= [KPI AOV PY], "#15803D", "#B91C1C" ) )
+		displayFolder: KPI
+		lineageTag: 802dfe7a-d83d-57d7-9920-55dec79fa8a7
+
+	measure 'Margin Color' =
+			IF ( [Gross Margin %] < 0, "#B91C1C", "#1F2937" )
+		displayFolder: Formatting
+		lineageTag: 36a23701-dea1-5484-a006-1c9b7a085e98
+
+	measure 'Change Color' =
+			IF ( [Margin Change pp] < 0, "#B91C1C", "#15803D" )
+		displayFolder: Formatting
+		lineageTag: c2b65b28-a5a3-554b-9d09-d3a31b875d31
+
+	measure 'Growth Color' =
+			IF ( [Sales YoY %] < 0, "#B91C1C", "#15803D" )
+		displayFolder: Formatting
+		lineageTag: 2fd3884e-510b-5259-b3d1-c6d3875d8895
+
+	measure 'Margin Point Color' =
+			IF ( [Gross Margin %] < 0, "#EB6834", "#2A78D6" )
+		displayFolder: Formatting
+		lineageTag: ba098405-b26a-5f77-a571-bea923ebd405
+
+	measure 'Channel Mix Color' =
+			// Orange where resellers make more than half of sales: the low-margin pattern.
+			IF ( [Reseller Share %] > 0.5, "#EB6834", "#2A78D6" )
+			// Check: one row per fiscal year, to compare with docs/expected-values.md
+		displayFolder: Formatting
+		lineageTag: d3d2bf4c-9652-53b5-bf11-807e4f1506ee
+
+	column SalesOrderLineKey
+		dataType: int64
+		isHidden
+		lineageTag: 24dd29a9-b9d9-55a3-80f7-57697d0ceeca
+		summarizeBy: none
+		sourceColumn: SalesOrderLineKey
+
+	column ResellerKey
+		dataType: int64
+		isHidden
+		lineageTag: fd278e45-2dd2-5ab6-8e13-b39ae54eaf68
+		summarizeBy: none
+		sourceColumn: ResellerKey
+
+	column CustomerKey
+		dataType: int64
+		isHidden
+		lineageTag: 6679acb0-2d30-54f2-ba4b-8dedd74ea7fa
+		summarizeBy: none
+		sourceColumn: CustomerKey
+
+	column ProductKey
+		dataType: int64
+		isHidden
+		lineageTag: 67910283-5626-5d4e-9a8b-6ea21b7a9823
+		summarizeBy: none
+		sourceColumn: ProductKey
+
+	column OrderDateKey
+		dataType: int64
+		isHidden
+		lineageTag: aa506c35-cf2e-58e4-99a2-ed40c49943d4
+		summarizeBy: none
+		sourceColumn: OrderDateKey
+
+	column DueDateKey
+		dataType: int64
+		isHidden
+		lineageTag: 9d9403bb-1f0b-5872-b791-c443a6917456
+		summarizeBy: none
+		sourceColumn: DueDateKey
+
+	column ShipDateKey
+		dataType: int64
+		isHidden
+		lineageTag: 46666549-d4f5-5b73-98d9-00b7d699455b
+		summarizeBy: none
+		sourceColumn: ShipDateKey
+
+	column SalesTerritoryKey
+		dataType: int64
+		isHidden
+		lineageTag: 1c41fdf0-5787-5487-9e90-f51315b2c225
+		summarizeBy: none
+		sourceColumn: SalesTerritoryKey
+
+	column 'Order Quantity'
+		dataType: int64
+		lineageTag: ab19b358-0109-5713-8bb0-86ecc0678796
+		summarizeBy: none
+		sourceColumn: Order Quantity
+
+	column 'Unit Price'
+		dataType: double
+		lineageTag: 30a06721-22c1-5b57-8155-43ca7791d98c
+		summarizeBy: none
+		sourceColumn: Unit Price
+
+	column 'Extended Amount'
+		dataType: double
+		lineageTag: 707eb49b-cb8a-5816-92c2-d3a32af1816a
+		summarizeBy: none
+		sourceColumn: Extended Amount
+
+	column 'Unit Price Discount Pct'
+		dataType: double
+		isHidden
+		lineageTag: 0a6d9de3-d881-57d6-889f-ea90c5838709
+		summarizeBy: none
+		sourceColumn: Unit Price Discount Pct
+
+	column 'Product Standard Cost'
+		dataType: double
+		lineageTag: d322ead3-915a-50af-84bc-93e8ed001af4
+		summarizeBy: none
+		sourceColumn: Product Standard Cost
+
+	column 'Total Product Cost'
+		dataType: double
+		lineageTag: dc400b94-1fda-5ff0-afda-8290e8eec8ba
+		summarizeBy: none
+		sourceColumn: Total Product Cost
+
+	column 'Sales Amount'
+		dataType: double
+		lineageTag: e2814c53-7fb7-54c3-993c-fde1dbb1772f
+		summarizeBy: none
+		sourceColumn: Sales Amount
+
+	partition Sales = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents(SourceFile), null, true),
+				    Data = Source{[Item="Sales",Kind="Table"]}[Data],
+				    Typed = Table.TransformColumnTypes(Data, {{"SalesOrderLineKey", Int64.Type}, {"ResellerKey", Int64.Type}, {"CustomerKey", Int64.Type}, {"ProductKey", Int64.Type}, {"OrderDateKey", Int64.Type}, {"DueDateKey", Int64.Type}, {"ShipDateKey", Int64.Type}, {"SalesTerritoryKey", Int64.Type}, {"Order Quantity", Int64.Type}, {"Unit Price", type number}, {"Extended Amount", type number}, {"Unit Price Discount Pct", type number}, {"Product Standard Cost", type number}, {"Total Product Cost", type number}, {"Sales Amount", type number}})
+				in
+				    Typed

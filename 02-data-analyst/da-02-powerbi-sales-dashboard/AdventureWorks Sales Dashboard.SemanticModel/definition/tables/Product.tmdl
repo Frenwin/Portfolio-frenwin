@@ -1,0 +1,67 @@
+table Product
+	lineageTag: 54d74db2-1571-5b4d-89bb-e3edd880159a
+
+	column ProductKey
+		dataType: int64
+		isHidden
+		lineageTag: 77f5227f-c018-5bb0-9527-f8ccbb4adbb1
+		summarizeBy: none
+		sourceColumn: ProductKey
+
+	column SKU
+		dataType: string
+		lineageTag: e385ce7d-df8c-530a-a82c-afbb41774f22
+		summarizeBy: none
+		sourceColumn: SKU
+
+	column Product
+		dataType: string
+		lineageTag: 0511e30f-17e6-5697-a808-b0382eaa95eb
+		summarizeBy: none
+		sourceColumn: Product
+
+	column 'Standard Cost'
+		dataType: double
+		lineageTag: 1e7e3059-9999-5f42-8fa8-8347a4cecef2
+		summarizeBy: none
+		sourceColumn: Standard Cost
+
+	column Color
+		dataType: string
+		lineageTag: ffbc5dc3-9165-5b75-87e3-946e442da0c9
+		summarizeBy: none
+		sourceColumn: Color
+
+	column 'List Price'
+		dataType: double
+		lineageTag: f061c5b1-9885-559c-ab15-c32662a297d4
+		summarizeBy: none
+		sourceColumn: List Price
+
+	column Model
+		dataType: string
+		lineageTag: 0ab38182-819b-52bf-b714-c008b6fe97ae
+		summarizeBy: none
+		sourceColumn: Model
+
+	column Subcategory
+		dataType: string
+		lineageTag: ca55c18d-70ac-58f6-baec-d46e7a3c1874
+		summarizeBy: none
+		sourceColumn: Subcategory
+
+	column Category
+		dataType: string
+		lineageTag: 4e35ce75-cdcc-55f2-8ddd-ff2eff6b7bd8
+		summarizeBy: none
+		sourceColumn: Category
+
+	partition Product = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents(SourceFile), null, true),
+				    Data = Source{[Item="Product",Kind="Table"]}[Data],
+				    Typed = Table.TransformColumnTypes(Data, {{"ProductKey", Int64.Type}, {"SKU", type text}, {"Product", type text}, {"Standard Cost", type number}, {"Color", type text}, {"List Price", type number}, {"Model", type text}, {"Subcategory", type text}, {"Category", type text}})
+				in
+				    Typed

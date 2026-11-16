@@ -1,0 +1,37 @@
+table SalesOrder
+	lineageTag: 7abb9d30-4e78-5192-befd-9ab268c49d3c
+
+	column Channel
+		dataType: string
+		lineageTag: 4eb745a7-3a4b-5270-90b4-c23476bf8e65
+		summarizeBy: none
+		sourceColumn: Channel
+
+	column SalesOrderLineKey
+		dataType: int64
+		isHidden
+		lineageTag: fda99997-c05d-5fe9-b1be-358ffd97d9c4
+		summarizeBy: none
+		sourceColumn: SalesOrderLineKey
+
+	column 'Sales Order'
+		dataType: string
+		lineageTag: 34d46d27-e7ca-501a-b36f-ec399118585a
+		summarizeBy: none
+		sourceColumn: Sales Order
+
+	column 'Sales Order Line'
+		dataType: string
+		lineageTag: 5fc43398-2b93-5da5-8e64-46df4cb21318
+		summarizeBy: none
+		sourceColumn: Sales Order Line
+
+	partition SalesOrder = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents(SourceFile), null, true),
+				    Data = Source{[Item="SalesOrder",Kind="Table"]}[Data],
+				    Typed = Table.TransformColumnTypes(Data, {{"Channel", type text}, {"SalesOrderLineKey", Int64.Type}, {"Sales Order", type text}, {"Sales Order Line", type text}})
+				in
+				    Typed

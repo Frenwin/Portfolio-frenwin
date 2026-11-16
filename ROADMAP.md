@@ -146,14 +146,14 @@ Daftar ini disusun dari requirement yang paling sering muncul di lowongan Data/A
 
 ## 4. Minggu 2 — Data Analyst (23–29 Nov)
 
-### DA-1 · SQL Business Case Study — Sen, 23 Nov (1 hari)
+### DA-1 · SQL Business Case Study — Sen, 23 Nov (1 hari) · **Selesai 16 Nov** (memakai warehouse Olist dari DE-1, bukan BigQuery) → [lihat project](02-data-analyst/da-01-sql-ecommerce-case-study/)
 
 - **Kenapa industri butuh:** SQL adalah skill nomor satu di hampir semua tes teknis Data Analyst.
 - **Dataset:** BigQuery public dataset `bigquery-public-data.thelook_ecommerce`.
 - **Scope MVP:** 10–12 pertanyaan bisnis (GMV bulanan, top kategori, repeat rate, AOV per channel, running total, ranking produk per kategori, MoM growth) diselesaikan dengan CTE dan window function.
 - **Output:** README berformat pertanyaan → query → jawaban → insight 1 kalimat; folder `queries/`.
 
-### DA-2 · Executive Sales Dashboard — Sel–Rab, 24–25 Nov (2 hari)
+### DA-2 · Executive Sales Dashboard — Sel–Rab, 24–25 Nov (2 hari) · **Selesai 16 Nov**: dashboard 2 halaman dibangun sebagai kode (PBIP) → [lihat project](02-data-analyst/da-02-powerbi-sales-dashboard/)
 
 - **Kenapa industri butuh:** Power BI adalah BI tool yang paling banyak diminta di lowongan Data Analyst di Indonesia, terutama korporat dan perbankan.
 - **Dataset:** [AdventureWorks sample](https://learn.microsoft.com/en-us/sql/samples/adventureworks-install-configure) (Microsoft).
@@ -355,8 +355,8 @@ Semua project ada di satu repo publik. **Push minimal sekali sehari**, termasuk 
 - [x] DE-4 `de-04-cdc-debezium`
 
 **Minggu 2 — Data Analyst**
-- [ ] DA-1 `da-01-sql-ecommerce-case-study`
-- [ ] DA-2 `da-02-powerbi-sales-dashboard`
+- [x] DA-1 `da-01-sql-ecommerce-case-study`
+- [x] DA-2 `da-02-powerbi-sales-dashboard`
 - [ ] DA-3 `da-03-ga4-funnel-cohort`
 - [ ] DA-4 `da-04-rfm-customer-segmentation`
 

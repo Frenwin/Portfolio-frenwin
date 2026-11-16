@@ -1,0 +1,4 @@
+expression SourceFile = "C:\Users\asus\Project Portofolio\02-data-analyst\da-02-powerbi-sales-dashboard\data\AdventureWorks Sales.xlsx" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 814b882d-beae-51ce-ab85-88961d7c2c80
+
+	annotation PBI_ResultType = Text

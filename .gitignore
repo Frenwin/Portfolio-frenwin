@@ -19,6 +19,11 @@ venv/
 **/data/lakehouse/
 **/data/checkpoints/
 **/data/runs/
+# Power BI project: per-user settings and the data cache (rebuilt by Refresh)
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+# Large sample workbooks: download with the command in each README
+02-data-analyst/da-02-powerbi-sales-dashboard/data/
 *.parquet
 *.csv.gz
 

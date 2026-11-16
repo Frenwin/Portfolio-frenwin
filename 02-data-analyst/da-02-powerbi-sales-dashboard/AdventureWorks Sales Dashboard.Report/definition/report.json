@@ -1,0 +1,47 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/report/3.3.0/schema.json",
+  "themeCollection": {
+    "baseTheme": {
+      "name": "Fluent2-CY26SU10",
+      "reportVersionAtImport": {
+        "visual": "2.10.0",
+        "page": "2.1.0",
+        "report": "3.3.0"
+      },
+      "type": "SharedResources"
+    },
+    "customTheme": {
+      "name": "AdventureWorksExecutive.json",
+      "reportVersionAtImport": {
+        "visual": "2.10.0",
+        "page": "2.1.0",
+        "report": "3.3.0"
+      },
+      "type": "RegisteredResources"
+    }
+  },
+  "resourcePackages": [
+    {
+      "name": "SharedResources",
+      "type": "SharedResources",
+      "items": [
+        {
+          "name": "Fluent2-CY26SU10",
+          "path": "BaseThemes/Fluent2-CY26SU10.json",
+          "type": "BaseTheme"
+        }
+      ]
+    },
+    {
+      "name": "RegisteredResources",
+      "type": "RegisteredResources",
+      "items": [
+        {
+          "name": "AdventureWorksExecutive.json",
+          "path": "AdventureWorksExecutive.json",
+          "type": "CustomTheme"
+        }
+      ]
+    }
+  ]
+}

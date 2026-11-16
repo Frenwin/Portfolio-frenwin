@@ -4,7 +4,7 @@
 
 **Frenwin** · Data Science @ Telkom University · AI Engineer (NLP & Computer Vision)
 
-[![Progress](https://img.shields.io/badge/progress-4%20of%2016%20projects-2ea44f)](#progress)
+[![Progress](https://img.shields.io/badge/progress-6%20of%2016%20projects-2ea44f)](#progress)
 [![Built in public](https://img.shields.io/badge/built%20in%20public-daily%20commits-blue)](DEVLOG.md)
 [![License: MIT](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
 
@@ -38,7 +38,7 @@ flowchart LR
 
 ## Progress
 
-**4 of 16 projects done** · `████░░░░░░░░░░░░` · **Week 1 complete** · daily log in [DEVLOG.md](DEVLOG.md)
+**6 of 16 projects done** · `██████░░░░░░░░░░` · Week 1 complete, Week 2 in progress · daily log in [DEVLOG.md](DEVLOG.md)
 
 Status: ✅ Done · 🔄 In progress · ⬜ Planned
 
@@ -55,8 +55,8 @@ Status: ✅ Done · 🔄 In progress · ⬜ Planned
 
 | # | Project | What it proves | Status |
 | --- | --- | --- | :---: |
-| DA-1 | SQL business case study | Answering business questions with CTEs and window functions | ⬜ |
-| DA-2 | Executive sales dashboard | Data modeling and DAX in Power BI | ⬜ |
+| DA-1 | [**SQL business case study**](02-data-analyst/da-01-sql-ecommerce-case-study/) | 12 questions on the DE-1 warehouse with window functions; findings with recommendations | ✅ |
+| DA-2 | [**Executive sales dashboard**](02-data-analyst/da-02-powerbi-sales-dashboard/) | Power BI dashboard built as code (TMDL + PBIR), 49 DAX measures, every number checked against pandas | ✅ |
 | DA-3 | Product funnel & cohort retention | Product analytics on real GA4 data | ⬜ |
 | DA-4 | Customer segmentation + insight deck | RFM segments turned into a campaign recommendation | ⬜ |
 
@@ -79,6 +79,18 @@ Status: ✅ Done · 🔄 In progress · ⬜ Planned
 | AI-4 | Object detection on edge | YOLO exported to ONNX and benchmarked on CPU | ⬜ |
 
 ## Latest highlights
+
+**[DA-2 · Executive sales dashboard](02-data-analyst/da-02-powerbi-sales-dashboard/)**: a two-page Power BI dashboard that answers "is our growth profitable?"
+
+![Executive overview](02-data-analyst/da-02-powerbi-sales-dashboard/docs/page-1-overview.png)
+
+- Resellers bring **73% of sales at a margin near zero**; Internet earns 41%. 21,829 lines were sold below cost, all to resellers.
+- Built entirely as code: model in TMDL, report in PBIR, custom theme, validated against Microsoft's schemas; every DAX number matches an independent pandas check.
+
+**[DA-1 · SQL case study](02-data-analyst/da-01-sql-ecommerce-case-study/)**: 12 business questions answered on the warehouse built in DE-1.
+- The marketplace stopped growing in 2018, and only **3%** of customers ever come back.
+- An order 1-3 days late averages a **3.29** review instead of 4.04; beyond a week, **1.70**.
+- A "top 15" query returning 74 rows exposed a wrong-results case in PostgreSQL 16.16 itself, reproduced and documented.
 
 **[DE-4 · Change Data Capture](01-data-engineer/de-04-cdc-debezium/)**: Debezium streams every insert, update and delete from a live PostgreSQL into Kafka without querying its tables.
 - Replica lag **0.52 s** (p50); after 8,999 transactions, 464 hard deletes and a mid-traffic schema change, all 4 tables are **row-by-row checksum identical**.

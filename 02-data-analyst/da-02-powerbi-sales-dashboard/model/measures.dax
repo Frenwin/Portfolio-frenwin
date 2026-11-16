@@ -1,0 +1,176 @@
+// AdventureWorks executive dashboard: all measures in one DAX query.
+// Paste into Power BI Desktop > DAX query view, press Run, compare the result grid with
+// docs/expected-values.md, then click "Update model: Add new measures" above DEFINE.
+// (tools/build_pbip.py reads this file, so the generated project always has these exact measures.)
+// Requires: Date marked as a date table; Sales[OrderDateKey] -> Date[DateKey] active.
+
+DEFINE
+    // ---------- Revenue ----------
+    MEASURE Sales[Total Sales] =
+        SUM ( Sales[Sales Amount] )
+    MEASURE Sales[Total Cost] =
+        SUM ( Sales[Total Product Cost] )
+    MEASURE Sales[Gross Profit] =
+        [Total Sales] - [Total Cost]
+    MEASURE Sales[Gross Margin %] =
+        DIVIDE ( [Gross Profit], [Total Sales] )
+    MEASURE Sales[Discount] =
+        // The source "Unit Price Discount Pct" column is always 0, but list and sales amounts differ.
+        SUMX ( Sales, Sales[Extended Amount] - Sales[Sales Amount] )
+
+    // ---------- Volume ----------
+    MEASURE Sales[Orders] =
+        // Orders live on the SalesOrder dimension; SUMMARIZE over the fact keeps the count
+        // responsive to every filter on Sales (a plain DISTINCTCOUNT on the dimension would not be).
+        COUNTROWS ( SUMMARIZE ( Sales, SalesOrder[Sales Order] ) )
+    MEASURE Sales[Units] =
+        SUM ( Sales[Order Quantity] )
+    MEASURE Sales[Avg Order Value] =
+        DIVIDE ( [Total Sales], [Orders] )
+
+    // ---------- Time intelligence (fiscal year ends 30 June) ----------
+    MEASURE Sales[Total Sales PY] =
+        CALCULATE ( [Total Sales], SAMEPERIODLASTYEAR ( 'Date'[Date] ) )
+    MEASURE Sales[Sales YoY %] =
+        DIVIDE ( [Total Sales] - [Total Sales PY], [Total Sales PY] )
+    MEASURE Sales[Gross Profit PY] =
+        CALCULATE ( [Gross Profit], SAMEPERIODLASTYEAR ( 'Date'[Date] ) )
+    MEASURE Sales[Profit YoY %] =
+        DIVIDE ( [Gross Profit] - [Gross Profit PY], [Gross Profit PY] )
+    MEASURE Sales[Gross Margin PY] =
+        CALCULATE ( [Gross Margin %], SAMEPERIODLASTYEAR ( 'Date'[Date] ) )
+    MEASURE Sales[Margin Change pp] =
+        IF ( NOT ISBLANK ( [Gross Margin PY] ), ( [Gross Margin %] - [Gross Margin PY] ) * 100 )
+    MEASURE Sales[Sales FYTD] =
+        TOTALYTD ( [Total Sales], 'Date'[Date], "6/30" )
+    MEASURE Sales[Sales PY FYTD] =
+        CALCULATE ( [Sales FYTD], SAMEPERIODLASTYEAR ( 'Date'[Date] ) )
+
+    // ---------- Diagnostics ----------
+    MEASURE Sales[Reseller Share %] =
+        DIVIDE ( CALCULATE ( [Total Sales], SalesOrder[Channel] = "Reseller" ), [Total Sales] )
+    MEASURE Sales[Loss Lines] =
+        COUNTROWS ( FILTER ( Sales, Sales[Sales Amount] < Sales[Total Product Cost] ) )
+    MEASURE Sales[Loss Amount] =
+        SUMX (
+            FILTER ( Sales, Sales[Sales Amount] < Sales[Total Product Cost] ),
+            Sales[Total Product Cost] - Sales[Sales Amount]
+        )
+    MEASURE Sales[Profit Rank] =
+        IF (
+            ISINSCOPE ( 'Product'[Product] ),
+            RANKX ( ALLSELECTED ( 'Product'[Product] ), [Gross Profit], , DESC, DENSE )
+        )
+    MEASURE Sales[Gross Profit Top 10] =
+        // Lets a bar chart show only the 10 most profitable products, without a visual-level filter.
+        IF ( [Profit Rank] <= 10, [Gross Profit] )
+
+    // ---------- KPI (latest fiscal year unless one is selected) ----------
+    MEASURE Sales[KPI Fiscal Year] =
+        IF (
+            HASONEVALUE ( 'Date'[Fiscal Year] ),
+            VALUES ( 'Date'[Fiscal Year] ),
+            CALCULATE ( MAX ( 'Date'[Fiscal Year] ), REMOVEFILTERS ( 'Date' ) )
+        )
+    MEASURE Sales[KPI Prior Year] =
+        "FY" & ( VALUE ( RIGHT ( [KPI Fiscal Year], 4 ) ) - 1 )
+    MEASURE Sales[KPI Period] =
+        [KPI Fiscal Year] & " vs " & [KPI Prior Year]
+    MEASURE Sales[KPI Sales] =
+        VAR fy = [KPI Fiscal Year]
+        RETURN CALCULATE ( [Total Sales], REMOVEFILTERS ( 'Date' ), 'Date'[Fiscal Year] = fy )
+    MEASURE Sales[KPI Sales PY] =
+        VAR fy = [KPI Prior Year]
+        RETURN CALCULATE ( [Total Sales], REMOVEFILTERS ( 'Date' ), 'Date'[Fiscal Year] = fy )
+    MEASURE Sales[KPI Profit] =
+        VAR fy = [KPI Fiscal Year]
+        RETURN CALCULATE ( [Gross Profit], REMOVEFILTERS ( 'Date' ), 'Date'[Fiscal Year] = fy )
+    MEASURE Sales[KPI Profit PY] =
+        VAR fy = [KPI Prior Year]
+        RETURN CALCULATE ( [Gross Profit], REMOVEFILTERS ( 'Date' ), 'Date'[Fiscal Year] = fy )
+    MEASURE Sales[KPI Margin] =
+        DIVIDE ( [KPI Profit], [KPI Sales] )
+    MEASURE Sales[KPI Margin PY] =
+        DIVIDE ( [KPI Profit PY], [KPI Sales PY] )
+    MEASURE Sales[KPI Orders] =
+        VAR fy = [KPI Fiscal Year]
+        RETURN CALCULATE ( [Orders], REMOVEFILTERS ( 'Date' ), 'Date'[Fiscal Year] = fy )
+    MEASURE Sales[KPI Orders PY] =
+        VAR fy = [KPI Prior Year]
+        RETURN CALCULATE ( [Orders], REMOVEFILTERS ( 'Date' ), 'Date'[Fiscal Year] = fy )
+    MEASURE Sales[KPI AOV] =
+        DIVIDE ( [KPI Sales], [KPI Orders] )
+    MEASURE Sales[KPI AOV PY] =
+        DIVIDE ( [KPI Sales PY], [KPI Orders PY] )
+    MEASURE Sales[KPI Sales Delta] =
+        VAR prev = [KPI Sales PY]
+        VAR d = DIVIDE ( [KPI Sales] - prev, prev )
+        RETURN IF ( ISBLANK ( prev ), "No prior year", IF ( d >= 0, "▲ ", "▼ " ) & FORMAT ( ABS ( d ), "0.0%" ) & " vs " & [KPI Prior Year] )
+    MEASURE Sales[KPI Profit Delta] =
+        VAR prev = [KPI Profit PY]
+        VAR d = DIVIDE ( [KPI Profit] - prev, prev )
+        RETURN IF ( ISBLANK ( prev ), "No prior year", IF ( d >= 0, "▲ ", "▼ " ) & FORMAT ( ABS ( d ), "0.0%" ) & " vs " & [KPI Prior Year] )
+    MEASURE Sales[KPI Margin Delta] =
+        VAR prev = [KPI Margin PY]
+        VAR d = ( [KPI Margin] - prev ) * 100
+        RETURN IF ( ISBLANK ( prev ), "No prior year", IF ( d >= 0, "▲ ", "▼ " ) & FORMAT ( ABS ( d ), "0.0" ) & " pp vs " & [KPI Prior Year] )
+    MEASURE Sales[KPI Orders Delta] =
+        VAR prev = [KPI Orders PY]
+        VAR d = DIVIDE ( [KPI Orders] - prev, prev )
+        RETURN IF ( ISBLANK ( prev ), "No prior year", IF ( d >= 0, "▲ ", "▼ " ) & FORMAT ( ABS ( d ), "0.0%" ) & " vs " & [KPI Prior Year] )
+    MEASURE Sales[KPI AOV Delta] =
+        VAR prev = [KPI AOV PY]
+        VAR d = DIVIDE ( [KPI AOV] - prev, prev )
+        RETURN IF ( ISBLANK ( prev ), "No prior year", IF ( d >= 0, "▲ ", "▼ " ) & FORMAT ( ABS ( d ), "0.0%" ) & " vs " & [KPI Prior Year] )
+    MEASURE Sales[KPI Sales Color] =
+        IF ( ISBLANK ( [KPI Sales PY] ), "#6B7280", IF ( [KPI Sales] >= [KPI Sales PY], "#15803D", "#B91C1C" ) )
+    MEASURE Sales[KPI Profit Color] =
+        IF ( ISBLANK ( [KPI Profit PY] ), "#6B7280", IF ( [KPI Profit] >= [KPI Profit PY], "#15803D", "#B91C1C" ) )
+    MEASURE Sales[KPI Margin Color] =
+        IF ( ISBLANK ( [KPI Margin PY] ), "#6B7280", IF ( [KPI Margin] >= [KPI Margin PY], "#15803D", "#B91C1C" ) )
+    MEASURE Sales[KPI Orders Color] =
+        IF ( ISBLANK ( [KPI Orders PY] ), "#6B7280", IF ( [KPI Orders] >= [KPI Orders PY], "#15803D", "#B91C1C" ) )
+    MEASURE Sales[KPI AOV Color] =
+        IF ( ISBLANK ( [KPI AOV PY] ), "#6B7280", IF ( [KPI AOV] >= [KPI AOV PY], "#15803D", "#B91C1C" ) )
+
+    // ---------- Formatting (colours driven by data) ----------
+    MEASURE Sales[Margin Color] =
+        IF ( [Gross Margin %] < 0, "#B91C1C", "#1F2937" )
+    MEASURE Sales[Change Color] =
+        IF ( [Margin Change pp] < 0, "#B91C1C", "#15803D" )
+    MEASURE Sales[Growth Color] =
+        IF ( [Sales YoY %] < 0, "#B91C1C", "#15803D" )
+    MEASURE Sales[Margin Point Color] =
+        IF ( [Gross Margin %] < 0, "#EB6834", "#2A78D6" )
+    MEASURE Sales[Channel Mix Color] =
+        // Orange where resellers make more than half of sales: the low-margin pattern.
+        IF ( [Reseller Share %] > 0.5, "#EB6834", "#2A78D6" )
+
+// Check: one row per fiscal year, to compare with docs/expected-values.md
+EVALUATE
+SUMMARIZECOLUMNS (
+    'Date'[Fiscal Year],
+    "Total Sales", [Total Sales],
+    "Gross Profit", [Gross Profit],
+    "Gross Margin %", [Gross Margin %],
+    "Orders", [Orders],
+    "Avg Order Value", [Avg Order Value],
+    "Units", [Units],
+    "Sales YoY %", [Sales YoY %],
+    "Profit YoY %", [Profit YoY %],
+    "Margin Change pp", [Margin Change pp],
+    "Reseller Share %", [Reseller Share %],
+    "Loss Lines", [Loss Lines]
+)
+ORDER BY 'Date'[Fiscal Year]
+
+// Check: channel x fiscal year (the key finding)
+EVALUATE
+SUMMARIZECOLUMNS (
+    'Date'[Fiscal Year],
+    SalesOrder[Channel],
+    "Total Sales", [Total Sales],
+    "Gross Margin %", [Gross Margin %],
+    "Orders", [Orders]
+)
+ORDER BY 'Date'[Fiscal Year], SalesOrder[Channel]

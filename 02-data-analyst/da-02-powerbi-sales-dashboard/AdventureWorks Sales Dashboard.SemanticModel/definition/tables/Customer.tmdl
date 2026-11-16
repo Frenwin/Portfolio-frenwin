@@ -1,0 +1,55 @@
+table Customer
+	lineageTag: af21da39-da65-5f7b-bfb4-ac7bd2ff4f5e
+
+	column CustomerKey
+		dataType: int64
+		isHidden
+		lineageTag: 79ca1af1-a5eb-5562-8f5b-389fe517558d
+		summarizeBy: none
+		sourceColumn: CustomerKey
+
+	column 'Customer ID'
+		dataType: string
+		lineageTag: da7321d9-5857-590d-9c23-fd29ae3e1c3b
+		summarizeBy: none
+		sourceColumn: Customer ID
+
+	column Customer
+		dataType: string
+		lineageTag: 0ea40f43-e670-594e-9189-0aeeaec35f8a
+		summarizeBy: none
+		sourceColumn: Customer
+
+	column City
+		dataType: string
+		lineageTag: 73a2eb0c-ed08-544e-9e0e-942fece649f9
+		summarizeBy: none
+		sourceColumn: City
+
+	column 'State-Province'
+		dataType: string
+		lineageTag: f0e54b5a-d627-5c6a-ade0-62deb339be38
+		summarizeBy: none
+		sourceColumn: State-Province
+
+	column 'Country-Region'
+		dataType: string
+		lineageTag: 537817ea-746b-5516-86d4-2b3a719a07fc
+		summarizeBy: none
+		sourceColumn: Country-Region
+
+	column 'Postal Code'
+		dataType: string
+		lineageTag: cd04d641-549d-5a91-a17a-a7a69e463b1c
+		summarizeBy: none
+		sourceColumn: Postal Code
+
+	partition Customer = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents(SourceFile), null, true),
+				    Data = Source{[Item="Customer",Kind="Table"]}[Data],
+				    Typed = Table.TransformColumnTypes(Data, {{"CustomerKey", Int64.Type}, {"Customer ID", type text}, {"Customer", type text}, {"City", type text}, {"State-Province", type text}, {"Country-Region", type text}, {"Postal Code", type text}})
+				in
+				    Typed

@@ -1,0 +1,335 @@
+{
+  "by_fiscal_year": [
+    {
+      "Total Sales": 23860891.17,
+      "Total Cost": 20824957.6,
+      "Gross Profit": 3035933.57,
+      "Gross Margin %": 12.72,
+      "Orders": 3198,
+      "Units": 24349,
+      "Avg Order Value": 7461.19,
+      "Discount": 140612.17,
+      "Fiscal Year": "FY2018"
+    },
+    {
+      "Total Sales": 34070108.5,
+      "Total Cost": 30362108.34,
+      "Gross Profit": 3708000.16,
+      "Gross Margin %": 10.88,
+      "Orders": 4738,
+      "Units": 83339,
+      "Avg Order Value": 7190.82,
+      "Discount": 58211.09,
+      "Fiscal Year": "FY2019",
+      "Sales YoY %": 42.79,
+      "Profit YoY %": 22.14,
+      "Margin change pp": -1.84
+    },
+    {
+      "Total Sales": 51878274.54,
+      "Total Cost": 46070842.02,
+      "Gross Profit": 5807432.52,
+      "Gross Margin %": 11.19,
+      "Orders": 23519,
+      "Units": 167088,
+      "Avg Order Value": 2205.8,
+      "Discount": 328684.62,
+      "Fiscal Year": "FY2020",
+      "Sales YoY %": 52.27,
+      "Profit YoY %": 56.62,
+      "Margin change pp": 0.31
+    }
+  ],
+  "all_years": {
+    "Total Sales": 109809274.2,
+    "Total Cost": 97257907.95,
+    "Gross Profit": 12551366.25,
+    "Gross Margin %": 11.43,
+    "Orders": 31455,
+    "Units": 274776,
+    "Avg Order Value": 3491.0,
+    "Discount": 527507.89
+  },
+  "by_channel_year": [
+    {
+      "Fiscal Year": "FY2018",
+      "Channel": "Internet",
+      "Total Sales": 7572449.4,
+      "Total Cost": 4527280.78,
+      "Gross Profit": 3045168.62,
+      "Gross Margin %": 40.21,
+      "Orders": 2459,
+      "Units": 2459,
+      "Avg Order Value": 3079.48,
+      "Discount": 0.0
+    },
+    {
+      "Fiscal Year": "FY2018",
+      "Channel": "Reseller",
+      "Total Sales": 16288441.77,
+      "Total Cost": 16297676.82,
+      "Gross Profit": -9235.05,
+      "Gross Margin %": -0.06,
+      "Orders": 739,
+      "Units": 21890,
+      "Avg Order Value": 22041.19,
+      "Discount": 140612.17
+    },
+    {
+      "Fiscal Year": "FY2019",
+      "Channel": "Internet",
+      "Total Sales": 6148437.98,
+      "Total Cost": 3593882.59,
+      "Gross Profit": 2554555.4,
+      "Gross Margin %": 41.55,
+      "Orders": 3483,
+      "Units": 4380,
+      "Avg Order Value": 1765.27,
+      "Discount": 0.0
+    },
+    {
+      "Fiscal Year": "FY2019",
+      "Channel": "Reseller",
+      "Total Sales": 27921670.52,
+      "Total Cost": 26768225.75,
+      "Gross Profit": 1153444.77,
+      "Gross Margin %": 4.13,
+      "Orders": 1255,
+      "Units": 78959,
+      "Avg Order Value": 22248.34,
+      "Discount": 58211.09
+    },
+    {
+      "Fiscal Year": "FY2020",
+      "Channel": "Internet",
+      "Total Sales": 15637789.84,
+      "Total Cost": 9156630.21,
+      "Gross Profit": 6481159.63,
+      "Gross Margin %": 41.45,
+      "Orders": 21717,
+      "Units": 53559,
+      "Avg Order Value": 720.07,
+      "Discount": 0.0
+    },
+    {
+      "Fiscal Year": "FY2020",
+      "Channel": "Reseller",
+      "Total Sales": 36240484.7,
+      "Total Cost": 36914211.81,
+      "Gross Profit": -673727.11,
+      "Gross Margin %": -1.86,
+      "Orders": 1802,
+      "Units": 113529,
+      "Avg Order Value": 20111.26,
+      "Discount": 328684.62
+    }
+  ],
+  "by_category": [
+    {
+      "Category": "Bikes",
+      "Total Sales": 94620526.21,
+      "Total Cost": 84105429.6,
+      "Gross Profit": 10515096.61,
+      "Gross Margin %": 11.11,
+      "Orders": 18358,
+      "Units": 90220,
+      "Avg Order Value": 5154.18,
+      "Discount": 494640.63
+    },
+    {
+      "Category": "Components",
+      "Total Sales": 11799076.66,
+      "Total Cost": 10766110.18,
+      "Gross Profit": 1032966.48,
+      "Gross Margin %": 8.75,
+      "Orders": 2646,
+      "Units": 49027,
+      "Avg Order Value": 4459.21,
+      "Discount": 5214.74
+    },
+    {
+      "Category": "Clothing",
+      "Total Sales": 2117613.45,
+      "Total Cost": 1748777.45,
+      "Gross Profit": 368836.0,
+      "Gross Margin %": 17.42,
+      "Orders": 9871,
+      "Units": 73598,
+      "Avg Order Value": 214.53,
+      "Discount": 20964.49
+    },
+    {
+      "Category": "Accessories",
+      "Total Sales": 1272057.89,
+      "Total Cost": 637590.73,
+      "Gross Profit": 634467.16,
+      "Gross Margin %": 49.88,
+      "Orders": 19523,
+      "Units": 61931,
+      "Avg Order Value": 65.16,
+      "Discount": 6688.02
+    }
+  ],
+  "by_country": [
+    {
+      "Country": "United States",
+      "Total Sales": 62997590.72,
+      "Total Cost": 58553452.13,
+      "Gross Profit": 4444138.59,
+      "Gross Margin %": 7.05,
+      "Orders": 12041,
+      "Units": 154092,
+      "Avg Order Value": 5231.92,
+      "Discount": 311132.49
+    },
+    {
+      "Country": "Canada",
+      "Total Sales": 16355770.46,
+      "Total Cost": 15347621.87,
+      "Gross Profit": 1008148.59,
+      "Gross Margin %": 6.16,
+      "Orders": 4067,
+      "Units": 49381,
+      "Avg Order Value": 4021.58,
+      "Discount": 85354.55
+    },
+    {
+      "Country": "Australia",
+      "Total Sales": 10655335.96,
+      "Total Cost": 7078201.77,
+      "Gross Profit": 3577134.19,
+      "Gross Margin %": 33.57,
+      "Orders": 6843,
+      "Units": 18293,
+      "Avg Order Value": 1557.11,
+      "Discount": 28534.05
+    },
+    {
+      "Country": "United Kingdom",
+      "Total Sales": 7670721.04,
+      "Total Cost": 6273848.35,
+      "Gross Profit": 1396872.69,
+      "Gross Margin %": 18.21,
+      "Orders": 3219,
+      "Units": 20099,
+      "Avg Order Value": 2382.95,
+      "Discount": 32118.06
+    },
+    {
+      "Country": "France",
+      "Total Sales": 7251555.65,
+      "Total Cost": 6202600.53,
+      "Gross Profit": 1048955.12,
+      "Gross Margin %": 14.47,
+      "Orders": 2672,
+      "Units": 19906,
+      "Avg Order Value": 2713.91,
+      "Discount": 39916.27
+    },
+    {
+      "Country": "Germany",
+      "Total Sales": 4878300.38,
+      "Total Cost": 3802183.31,
+      "Gross Profit": 1076117.07,
+      "Gross Margin %": 22.06,
+      "Orders": 2613,
+      "Units": 13005,
+      "Avg Order Value": 1866.93,
+      "Discount": 30452.47
+    }
+  ],
+  "top_products_by_profit_latest_fy": [
+    {
+      "Rank": 1,
+      "Product": "Mountain-200 Black, 38",
+      "Total Sales": 2525104.06,
+      "Gross Profit": 540713.7
+    },
+    {
+      "Rank": 2,
+      "Product": "Mountain-200 Black, 42",
+      "Total Sales": 2219585.58,
+      "Gross Profit": 533166.77
+    },
+    {
+      "Rank": 3,
+      "Product": "Mountain-200 Silver, 38",
+      "Total Sales": 2079781.95,
+      "Gross Profit": 510413.77
+    },
+    {
+      "Rank": 4,
+      "Product": "Mountain-200 Black, 46",
+      "Total Sales": 1888678.54,
+      "Gross Profit": 493971.38
+    },
+    {
+      "Rank": 5,
+      "Product": "Mountain-200 Silver, 46",
+      "Total Sales": 1871448.7,
+      "Gross Profit": 493189.07
+    },
+    {
+      "Rank": 6,
+      "Product": "Mountain-200 Silver, 42",
+      "Total Sales": 1863508.07,
+      "Gross Profit": 476389.1
+    },
+    {
+      "Rank": 7,
+      "Product": "Touring-1000 Blue, 54",
+      "Total Sales": 731432.68,
+      "Gross Profit": 126802.01
+    },
+    {
+      "Rank": 8,
+      "Product": "Road-350-W Yellow, 44",
+      "Total Sales": 680396.0,
+      "Gross Profit": 108830.72
+    },
+    {
+      "Rank": 9,
+      "Product": "Touring-1000 Blue, 50",
+      "Total Sales": 1057096.64,
+      "Gross Profit": 104210.57
+    },
+    {
+      "Rank": 10,
+      "Product": "Touring-1000 Blue, 46",
+      "Total Sales": 1572649.15,
+      "Gross Profit": 96639.0
+    }
+  ],
+  "loss_making_subcategories": [
+    {
+      "Category": "Clothing",
+      "Subcategory": "Jerseys",
+      "Total Sales": 752259.39,
+      "Gross Profit": -92921.27,
+      "Gross Margin %": -12.35
+    },
+    {
+      "Category": "Components",
+      "Subcategory": "Touring Frames",
+      "Total Sales": 1642327.69,
+      "Gross Profit": -5573.41,
+      "Gross Margin %": -0.34
+    },
+    {
+      "Category": "Clothing",
+      "Subcategory": "Caps",
+      "Total Sales": 51229.45,
+      "Gross Profit": -1203.2,
+      "Gross Margin %": -2.35
+    }
+  ],
+  "lines_sold_below_cost": {
+    "lines": 21829,
+    "share_of_lines_pct": 18.0,
+    "by_channel": {
+      "Internet": 0,
+      "Reseller": 21829
+    },
+    "loss_amount": 3320274.6
+  }
+}
