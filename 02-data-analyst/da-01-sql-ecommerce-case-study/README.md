@@ -137,7 +137,7 @@ da-01-sql-ecommerce-case-study/
 - **Correlation, not causation.** Late orders get worse reviews, but they may also differ in product or region. Week 3 (Data Scientist) can test the effect properly.
 - **Repeat rate may be understated** if returning customers use a new account; Olist's `customer_unique_id` is the best identity the data offers.
 - **31% of second orders come within one day** of the first, likely split baskets rather than loyalty, so true retention is lower still.
-- Next: the same questions as a Power BI dashboard ([DA-2](../da-02-powerbi-sales-dashboard/)) and as funnel and cohort analysis ([DA-3](../)).
+- Next: the same questions as a Power BI dashboard ([DA-2](../da-02-powerbi-sales-dashboard/)) and as funnel and cohort analysis ([DA-3](../da-03-ga4-funnel-cohort/)).
 
 ## Data source
 
