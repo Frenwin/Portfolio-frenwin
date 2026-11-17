@@ -25,7 +25,7 @@ A warehouse full of correct data is still useless if nobody can read it. Analyst
 | --- | --- | --- | --- | :---: |
 | DA-1 | [**SQL business case study**](da-01-sql-ecommerce-case-study/) | 12 business questions on the DE-1 warehouse; 5 findings with recommendations (growth stalled, 3% repeat rate, lateness costs up to 2.6 review stars) | PostgreSQL, window functions | ✅ |
 | DA-2 | [**Executive sales dashboard**](da-02-powerbi-sales-dashboard/) | Two-page executive dashboard built as code (PBIP), 49 DAX measures checked against pandas; finds resellers bring 73% of sales at ~0% margin | Power BI, DAX, Power Query, PBIP | ✅ |
-| DA-3 | Product funnel & cohort retention | Funnel drop-off and weekly retention on real GA4 event data | BigQuery, GA4 schema | ⬜ |
+| DA-3 | [**GA4 funnel & cohort retention**](da-03-ga4-funnel-cohort/) | Funnel, weekly cohorts and tracking QA on 4.3M real GA4 events; finds 77% never view a product and a tracking gap hiding 34% of buyers from the cart step | BigQuery, GA4 schema | ✅ |
 | DA-4 | Customer segmentation + insight deck | RFM segments, profiles, and a recommendation deck with estimated value | Python, scikit-learn, slides | ⬜ |
 
 ## Skills covered

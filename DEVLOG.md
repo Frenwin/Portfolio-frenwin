@@ -21,3 +21,7 @@ Daily progress log, newest entries at the bottom. Each entry is added by `script
 
 - DA-1: done - 12 SQL business questions on the DE-1 warehouse, 5 findings; documented a PostgreSQL 16.16 wrong-results case
 - DA-2: done - Power BI executive dashboard built as code (TMDL + PBIR + theme), 49 DAX measures validated against pandas
+
+## 2026-11-17
+
+- DA-3: done - GA4 funnel, weekly cohort retention and tracking QA in BigQuery (4.3M events, 6.2 GB scanned); found add_to_cart missing for 34% of buyers

@@ -38,7 +38,7 @@ flowchart LR
 
 ## Progress
 
-**6 of 16 projects done** · `██████░░░░░░░░░░` · Week 1 complete, Week 2 in progress · daily log in [DEVLOG.md](DEVLOG.md)
+**7 of 16 projects done** · `███████░░░░░░░░░` · Week 1 complete, Week 2 in progress · daily log in [DEVLOG.md](DEVLOG.md)
 
 Status: ✅ Done · 🔄 In progress · ⬜ Planned
 
@@ -57,7 +57,7 @@ Status: ✅ Done · 🔄 In progress · ⬜ Planned
 | --- | --- | --- | :---: |
 | DA-1 | [**SQL business case study**](02-data-analyst/da-01-sql-ecommerce-case-study/) | 12 questions on the DE-1 warehouse with window functions; findings with recommendations | ✅ |
 | DA-2 | [**Executive sales dashboard**](02-data-analyst/da-02-powerbi-sales-dashboard/) | Power BI dashboard built as code (TMDL + PBIR), 49 DAX measures, every number checked against pandas | ✅ |
-| DA-3 | Product funnel & cohort retention | Product analytics on real GA4 data | ⬜ |
+| DA-3 | [**GA4 funnel & cohort retention**](02-data-analyst/da-03-ga4-funnel-cohort/) | Funnel, weekly cohorts and tracking QA on 4.3M real GA4 events in BigQuery | ✅ |
 | DA-4 | Customer segmentation + insight deck | RFM segments turned into a campaign recommendation | ⬜ |
 
 ### Week 3 · Data Scientist — decide what to do next
@@ -80,10 +80,14 @@ Status: ✅ Done · 🔄 In progress · ⬜ Planned
 
 ## Latest highlights
 
+**[DA-3 · GA4 funnel & cohort retention](02-data-analyst/da-03-ga4-funnel-cohort/)**: product analytics on the raw GA4 export of Google's merchandise store, in BigQuery.
+
+![User funnel](02-data-analyst/da-03-ga4-funnel-cohort/docs/funnel.png)
+
+- **77%** of visitors never open a product page, and **41%** of shoppers who begin checkout never add payment details (about $66K of sizing at stake).
+- A tracking audit found that **34% of buyers never fire `add_to_cart`**, so the textbook funnel misses 40% of buyers; the headline funnel is rebuilt from reliable steps.
+
 **[DA-2 · Executive sales dashboard](02-data-analyst/da-02-powerbi-sales-dashboard/)**: a two-page Power BI dashboard that answers "is our growth profitable?"
-
-![Executive overview](02-data-analyst/da-02-powerbi-sales-dashboard/docs/page-1-overview.png)
-
 - Resellers bring **73% of sales at a margin near zero**; Internet earns 41%. 21,829 lines were sold below cost, all to resellers.
 - Built entirely as code: model in TMDL, report in PBIR, custom theme, validated against Microsoft's schemas; every DAX number matches an independent pandas check.
 

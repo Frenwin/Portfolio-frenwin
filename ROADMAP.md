@@ -161,7 +161,7 @@ Daftar ini disusun dari requirement yang paling sering muncul di lowongan Data/A
 - **Scope MVP:** star schema di model Power BI, measure DAX (YoY, YTD, margin, target vs aktual), 2 halaman: Executive Overview & Product/Region drill-down.
 - **Output:** file `.pbix`, PDF export, screenshot/GIF di README, daftar measure DAX dengan penjelasan.
 
-### DA-3 · Product Funnel & Cohort Retention — Kam, 26 Nov (1 hari)
+### DA-3 · Product Funnel & Cohort Retention — Kam, 26 Nov (1 hari) · **Selesai 17 Nov**: funnel, cohort mingguan dan tracking QA di BigQuery → [lihat project](02-data-analyst/da-03-ga4-funnel-cohort/)
 
 - **Kenapa industri butuh:** analisis funnel dan retention adalah pekerjaan harian Product Analyst di startup.
 - **Dataset:** BigQuery public dataset `ga4_obfuscated_sample_ecommerce` (schema GA4 asli).
@@ -357,7 +357,7 @@ Semua project ada di satu repo publik. **Push minimal sekali sehari**, termasuk 
 **Minggu 2 — Data Analyst**
 - [x] DA-1 `da-01-sql-ecommerce-case-study`
 - [x] DA-2 `da-02-powerbi-sales-dashboard`
-- [ ] DA-3 `da-03-ga4-funnel-cohort`
+- [x] DA-3 `da-03-ga4-funnel-cohort`
 - [ ] DA-4 `da-04-rfm-customer-segmentation`
 
 **Minggu 3 — Data Scientist**
